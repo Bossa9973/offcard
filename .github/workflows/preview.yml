@@ -1,0 +1,80 @@
+name: Preview
+
+on:
+  pull_request:
+
+concurrency:
+  group: preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  preview:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - id: build
+        env:
+          WHOP_API_KEY: ${{ secrets.NEOBANK_API_KEY }}
+          APP_ID: app_EtrVTHbuydoOk6
+          COMPANY_ID: biz_tIy2IC53bJ7RQz
+          CREATOR_ID: user_4LRUTP9YgNHfj
+        run: |
+          pnpm exec whop apps deploy --preview 2>&1 | tee deploy.log
+          BUILD_ID=$(grep -oE 'apbu_[A-Za-z0-9]+' deploy.log | tail -1)
+          test -n "$BUILD_ID"
+          echo "build_id=$BUILD_ID" >> "$GITHUB_OUTPUT"
+          TOKEN=$(curl -sf -X POST 'https://api.whop.com/api/v1/access_tokens' \
+            -H "authorization: Bearer ${WHOP_API_KEY}" -H 'content-type: application/json' -H 'api-version-date: 2026-08-03' \
+            --data "{\"company_id\":\"${COMPANY_ID}\",\"user_id\":\"${CREATOR_ID}\",\"scoped_actions\":[\"developer:basic:read\",\"developer:update_app\"]}" | jq -r '.token // empty')
+          test -n "$TOKEN"
+          APP=$(curl -sf "https://api.whop.com/api/v1/apps/${APP_ID}" \
+            -H "authorization: Bearer ${TOKEN}" -H 'api-version-date: 2026-08-03')
+          PREVIEW_TOKEN=$(echo "$APP" | jq -r '.preview_token // empty')
+          test -n "$PREVIEW_TOKEN"
+          echo "preview_token=$PREVIEW_TOKEN" >> "$GITHUB_OUTPUT"
+          # Whop OAuth matches redirect_uri by exact string, and neobank derives its callback from the
+          # request origin, so login on the ephemeral preview host works only once that exact host is a
+          # registered redirect_uri. Register it per build; a `*.whop.site` wildcard is unsafe because
+          # whop.site is multi-tenant. Append + dedup keeps production, localhost, and other PRs'
+          # preview hosts; a concurrent cross-PR write can rarely drop a sibling, healed on next push.
+          CALLBACK="https://dev-${BUILD_ID#apbu_}.whop.site/api/auth/callback"
+          URIS=$(echo "$APP" | jq -c '.redirect_uris // []')
+          if ! echo "$URIS" | jq -e --arg u "$CALLBACK" 'index($u)' >/dev/null; then
+            curl -sf -X PATCH "https://api.whop.com/api/v1/apps/${APP_ID}" \
+              -H "authorization: Bearer ${TOKEN}" -H 'content-type: application/json' -H 'api-version-date: 2026-08-03' \
+              --data "{\"redirect_uris\":$(echo "$URIS" | jq -c --arg u "$CALLBACK" '. + [$u]')}" >/dev/null
+          fi
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          BUILD_ID: ${{ steps.build.outputs.build_id }}
+          PREVIEW_TOKEN: ${{ steps.build.outputs.preview_token }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          MARKER='<!-- neobank-preview -->'
+          SUFFIX="${BUILD_ID#apbu_}"
+          BODY="${MARKER}
+          ### Preview build
+
+          \`${BUILD_ID}\` from ${HEAD_SHA}
+
+          ### [dev-${SUFFIX}.whop.app](https://dev-${SUFFIX}.whop.app/?__whop_preview=${PREVIEW_TOKEN})
+
+          The link carries a 48-hour preview pass. Ship it: \`whop apps builds promote ${BUILD_ID}\`"
+          COMMENT_ID=$(gh api "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" --paginate --jq ".[] | select(.body | startswith(\"${MARKER}\")) | .id" | head -1)
+          if [ -n "$COMMENT_ID" ]; then
+            gh api -X PATCH "repos/${GITHUB_REPOSITORY}/issues/comments/${COMMENT_ID}" -f body="$BODY" > /dev/null
+          else
+            gh api "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" -f body="$BODY" > /dev/null
+          fi

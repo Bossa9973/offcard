@@ -1,0 +1,17 @@
+.nb-action-studies { max-width:1080px; margin:0 auto; padding:40px 32px 64px; color:var(--nb-text); }
+.nb-action-studies header { margin-bottom:32px; }
+.nb-action-studies header a { display:inline-block; color:var(--nb-muted); font-size:13px; margin-bottom:24px; text-decoration:none; }
+.nb-action-studies header a:hover { color:var(--nb-text); }
+.nb-action-studies h1 { font-size:32px; line-height:1.2; letter-spacing:-1px; font-weight:600; margin:0 0 12px; }
+.nb-action-studies p { color:var(--nb-muted); font-size:14px; margin:0; line-height:1.5; }
+.nb-action-studies section { padding:24px 0; border-top:1px solid var(--nb-border); }
+.nb-action-study-label { display:flex; align-items:baseline; gap:20px; justify-content:space-between; margin-bottom:20px; }
+.nb-action-studies h2 { font-size:16px; font-weight:600; margin:0; }
+.nb-action-study-label p { font-size:13px; }
+.nb-action-study-preview { min-height:48px; }
+@media(max-width:640px) {
+	.nb-action-studies { padding:24px 16px 40px; }
+	.nb-action-studies h1 { font-size:28px; }
+	.nb-action-study-label { display:block; }
+	.nb-action-study-label p { margin-top:6px; }
+}

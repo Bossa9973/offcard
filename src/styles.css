@@ -1,0 +1,7 @@
+@layer theme, base, frosted_ui, components, utilities;
+
+@import 'tailwindcss/preflight.css' layer(base);
+@import 'frosted-ui/styles.lite.css' layer(frosted_ui);
+@import './ui/styles.css';
+
+@source '.';

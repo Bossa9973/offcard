@@ -1,0 +1,13 @@
+node_modules
+dist
+.tanstack
+.wrangler
+.dev.vars
+.env
+.env.local
+src/routeTree.gen.ts
+worker-configuration.d.ts
+*.log
+.playwright-cli/
+.playwright-mcp/
+output/playwright/

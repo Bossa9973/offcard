@@ -1,0 +1,56 @@
+{
+  "name": "neobank",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "deploy": "whop apps deploy",
+    "dev": "vite dev",
+    "dev:design": "node scripts/dev-design.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test tests/*.test.ts"
+  },
+  "dependencies": {
+    "@frosted-ui/icons": "0.0.1-canary.158",
+    "@pdf-lib/fontkit": "^1.1.1",
+    "@tanstack/react-router": "1.169.2",
+    "@tanstack/react-start": "1.167.65",
+    "@whop/elements": "1.0.0",
+    "@whop/elements-react": "1.0.0",
+    "@whop/template-kit": "0.2.0",
+    "frosted-ui": "0.0.1-canary.157",
+    "pdf-lib": "^1.17.1",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "1.53.0",
+    "@tailwindcss/vite": "4.1.17",
+    "@types/node": "26.1.2",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "5.1.1",
+    "@whop/cli": "0.16.1",
+    "tailwindcss": "4.1.17",
+    "tsx": "^4.23.13",
+    "typescript": "5.9.3",
+    "vite": "^8.0.10",
+    "wrangler": "4.124.0"
+  },
+  "description": "A neobank built from Whop Elements.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/whopio/neobank.git"
+  },
+  "packageManager": "pnpm@10.12.4",
+  "engines": {
+    "node": ">=22"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp",
+      "workerd"
+    ]
+  }
+}

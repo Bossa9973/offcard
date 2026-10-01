@@ -1,0 +1,41 @@
+/** Single source for host CSS, Tailwind semantic utilities and official Element appearance. */
+export const tokens = {
+	bg: "#000000",
+	surface: "#0b0b0b",
+	raised: "#2b2b2b",
+	hover: "#353535",
+	border: "#242424",
+	"border-strong": "#444444",
+	text: "#ffffff",
+	muted: "#bfbfbf",
+	accent: "#f5f5f5",
+	"accent-hover": "#dddddd",
+	inverse: "#111111",
+	// Semantic state only; structure stays neutral.
+	positive: "#5cc98f",
+	negative: "#f07a72",
+	"chart-primary": "#eeeeee",
+	"chart-secondary": "#a3a3a3",
+	"chart-height": "240px",
+	"chart-value-size": "32px",
+	"chart-label-size": "14px",
+	"radius-sm": "6px",
+	"radius-control": "8px",
+	"radius-panel": "12px",
+	"control-height": "44px",
+	"space-1": "4px",
+	"space-2": "8px",
+	"space-3": "12px",
+	"space-4": "16px",
+	"space-5": "20px",
+	"space-6": "24px",
+	"page-gutter": "clamp(16px, 3vw, 40px)",
+	"text-small": "12px",
+	"text-body": "14px",
+	"text-section": "20px",
+	"text-title": "28px",
+	"motion-fast": "140ms",
+} as const;
+
+// Rendered in the document head, including SSR, so there is no unthemed first paint.
+export const tokenCss = `:root{${Object.entries(tokens).map(([key, value]) => `--nb-${key}:${value}`).join(";")}}`;
