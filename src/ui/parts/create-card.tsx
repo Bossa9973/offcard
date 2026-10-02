@@ -1,6 +1,7 @@
 import { Checkmark12, ChevronDown20, CreditCardPictogram } from "@frosted-ui/icons";
 import type { FormEvent } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { VelobankCreditCard } from "./phone-card-deck";
 
 import type { CardTeamMember } from "../../routes/api.cards.create";
 
@@ -407,10 +408,13 @@ export function CreateCardScreen({
 				)}
 			</section>
 
-			<section className="nb-card-create__preview-panel" aria-label="Virtual card preview">
-				<div className="nb-card-create__preview">
-					<strong className="nb-card-create__preview-entity">{entityName}</strong>
-					<span>{cardName || "Card name"}</span>
+			<section className="nb-card-create__preview-panel" aria-label="Virtual card preview" style={{ overflow: "visible" }}>
+				<div style={{ width: "100%", maxWidth: "23rem" }}>
+					<VelobankCreditCard
+						cardholderName={selectedMember?.name ?? entityName}
+						cardName={cardName || "PREMIUM VIRTUAL"}
+						cardNumber="2781 8191 6671 3190"
+					/>
 				</div>
 			</section>
 		</div>

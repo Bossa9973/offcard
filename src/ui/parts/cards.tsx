@@ -2,6 +2,7 @@ import type { LedgerActivity } from "@whop/elements-react";
 import { Wallet, useWallet } from "./wallet-provider";
 import { useCallback, useEffect, useState } from "react";
 import { DESIGN_MODE } from "../../design-mode";
+import { VelobankCreditCard } from "./phone-card-deck";
 
 import type { CardApplicationState } from "./card-application";
 import { CardApplication } from "./card-application";
@@ -146,11 +147,13 @@ export function CardsScreen({
 					<section className="nb-cards-chart" aria-label="Card spending">
 						<WalletCardsElement name="cardsChart" options={{ enabled, accessToken }} />
 					</section>
-					<section className="nb-cards-preview" aria-label="Card preview">
-						{selectedCard ? <WalletCardsElement className="nb-cards-preview__face" name="whopCard" options={{
-							accessToken, cardId: selectedCard, hideAppleWalletButton: true,
-						}} /> : previewLoading ? <div className="nb-skeleton nb-skeleton--panel" aria-label="Loading card preview" /> : <p>{previewError || "Select a card from the table below to preview it."}</p>}
-						{!selectedCard && previewError ? <button type="button" className="nb-button nb-button--secondary nb-main__action" onClick={() => setPreviewAttempt(value => value + 1)}>Try again</button> : null}
+					<section className="nb-cards-preview" aria-label="Card preview" style={{ overflow: "visible", padding: "1.5rem" }}>
+						<div style={{ width: "100%", maxWidth: "23rem", margin: "0 auto" }}>
+							<VelobankCreditCard
+								cardName={selectedCard && DEMO_CARD_METADATA[selectedCard] ? DEMO_CARD_METADATA[selectedCard].name : "PREMIUM CARD"}
+								cardNumber={selectedCard && DEMO_CARD_METADATA[selectedCard] ? `•••• •••• •••• ${DEMO_CARD_METADATA[selectedCard].last4}` : "2781 8191 6671 3190"}
+							/>
+						</div>
 					</section>
 				</div>
 				<section aria-label="All cards">

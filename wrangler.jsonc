@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "ywgi-neobank-app",
+  "name": "offcard",
   "main": "src/server.ts",
   "compatibility_date": "2026-07-25",
   "compatibility_flags": ["nodejs_compat"],

@@ -10,4 +10,9 @@ worker-configuration.d.ts
 *.log
 .playwright-cli/
 .playwright-mcp/
-output/playwright/
+output/
+hero_*.png
+bento_*.png
+pricing_*.png
+faq_*.png
+full_landing_page.png

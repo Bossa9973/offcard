@@ -1,0 +1,48 @@
+<svg width="400" height="100" viewBox="0 0 400 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="gold-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF2A3"/>
+      <stop offset="40%" stop-color="#D4AF37"/>
+      <stop offset="70%" stop-color="#AA771C"/>
+      <stop offset="100%" stop-color="#FFDF73"/>
+    </linearGradient>
+    <linearGradient id="silver-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="50%" stop-color="#D8D8E0"/>
+      <stop offset="100%" stop-color="#8E8E9E"/>
+    </linearGradient>
+    <linearGradient id="cyan-glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00F0FF"/>
+      <stop offset="100%" stop-color="#7000FF"/>
+    </linearGradient>
+    <filter id="logo-glow" x="-20%" y="-20%" width="140%" height="140%" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Geometric Luxury Monogram: Intersecting Beveled Diamond Shield -->
+  <g transform="translate(10, 10)">
+    <!-- Outer Diamond/Hex Frame -->
+    <path d="M40 4 L74 24 L74 56 L40 76 L6 56 L6 24 Z" 
+          stroke="url(#silver-grad)" stroke-width="3" fill="none" opacity="0.9" />
+    
+    <!-- Inner Core Bevels -->
+    <path d="M40 14 L65 29 L65 51 L40 66 L15 51 L15 29 Z" 
+          fill="url(#gold-grad)" opacity="0.25"/>
+    <path d="M40 14 L65 29 L40 50 L15 29 Z" 
+          fill="url(#silver-grad)" opacity="0.4"/>
+    <path d="M40 50 L65 51 L40 66 L15 51 Z" 
+          fill="url(#gold-grad)" opacity="0.85"/>
+
+    <!-- Central Floating Diamond Crystal -->
+    <polygon points="40,26 52,40 40,54 28,40" fill="url(#silver-grad)" filter="url(#logo-glow)" />
+    
+    <!-- Accent Line -->
+    <line x1="6" y1="40" x2="74" y2="40" stroke="url(#silver-grad)" stroke-width="1.5" stroke-dasharray="2 4" opacity="0.6"/>
+  </g>
+
+  <!-- Luxury Brand Typography -->
+  <text x="105" y="52" font-family="'Outfit', 'Inter', -apple-system, sans-serif" font-size="34" font-weight="800" letter-spacing="7" fill="url(#silver-grad)">OFFCARD</text>
+  <text x="108" y="74" font-family="'Inter', -apple-system, sans-serif" font-size="10" font-weight="600" letter-spacing="4.5" fill="#D4AF37" opacity="0.9">PRIVATE CLIENT &bull; BLACK</text>
+</svg>

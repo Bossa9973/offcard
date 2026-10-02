@@ -1,0 +1,591 @@
+/* ==========================================================================
+   Titanium Card & Lithic-Grade Aesthetic
+   ========================================================================== */
+
+.titanium-card-container {
+	position: relative;
+	perspective: 1200px;
+	margin: 0 auto;
+	width: min(24rem, 100%);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+/* Subtle, Deep Atmospheric Shadow */
+.titanium-ambient-shadow {
+	position: absolute;
+	top: 15%;
+	left: 8%;
+	right: 8%;
+	height: 70%;
+	border-radius: 50%;
+	background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, rgba(100, 110, 140, 0.04) 50%, transparent 80%);
+	filter: blur(40px);
+	pointer-events: none;
+	z-index: 0;
+}
+
+/* Physical Metal Card */
+.titanium-card {
+	aspect-ratio: 1.586;
+	width: 100%;
+	border-radius: 1rem;
+	position: relative;
+	transform-style: preserve-3d;
+	transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 300ms ease;
+	cursor: pointer;
+	user-select: none;
+	z-index: 1;
+	background: 
+		linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 100%),
+		radial-gradient(130% 130% at 20% 15%, #1e2029 0%, #101116 45%, #08090c 100%);
+	border: 1px solid rgba(255, 255, 255, 0.14);
+	box-shadow: 
+		0 25px 60px -15px rgba(0, 0, 0, 0.85),
+		0 0 1px 1px rgba(255, 255, 255, 0.1);
+	overflow: hidden;
+}
+
+.titanium-card:hover {
+	box-shadow: 
+		0 35px 80px -15px rgba(0, 0, 0, 0.95),
+		0 0 15px rgba(255, 255, 255, 0.12);
+}
+
+/* Brushed Titanium Micro-Texture Overlay */
+.titanium-card::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	background: repeating-linear-gradient(
+		90deg,
+		rgba(255, 255, 255, 0.015) 0px,
+		rgba(255, 255, 255, 0.015) 1px,
+		transparent 1px,
+		transparent 3px
+	);
+	pointer-events: none;
+	opacity: 0.7;
+	z-index: 2;
+}
+
+/* Specular Light Sweep */
+.titanium-card__glare {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	border-radius: inherit;
+	background: radial-gradient(
+		circle 300px at var(--glare-x, 50%) var(--glare-y, 50%),
+		rgba(255, 255, 255, 0.22) 0%,
+		rgba(255, 255, 255, 0.05) 35%,
+		transparent 65%
+	);
+	opacity: var(--glare-opacity, 0);
+	transition: opacity 250ms ease;
+	mix-blend-mode: overlay;
+	z-index: 3;
+}
+
+/* Card Faces */
+.titanium-card__face {
+	position: absolute;
+	inset: 0;
+	padding: 1.45rem 1.6rem;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	backface-visibility: hidden;
+	-webkit-backface-visibility: hidden;
+	transition: transform 550ms cubic-bezier(0.2, 0.8, 0.2, 1);
+	z-index: 4;
+}
+
+.titanium-card__face--front {
+	transform: rotateY(0deg);
+}
+
+.titanium-card__face--back {
+	transform: rotateY(180deg);
+	padding: 0;
+	justify-content: flex-start;
+	background: inherit;
+}
+
+.titanium-card--flipped .titanium-card__face--front {
+	transform: rotateY(-180deg);
+}
+
+.titanium-card--flipped .titanium-card__face--back {
+	transform: rotateY(0deg);
+}
+
+/* FRONT FACE ELEMENTS */
+.titanium-card__header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.titanium-card__brand {
+	display: flex;
+	align-items: center;
+	gap: 0.65rem;
+}
+
+.titanium-card__symbol {
+	filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));
+}
+
+.titanium-card__logotype {
+	display: flex;
+	flex-direction: column;
+	line-height: 1;
+}
+
+.titanium-card__brand-name {
+	font-family: 'Outfit', 'Inter', -apple-system, sans-serif;
+	font-size: 1.05rem;
+	font-weight: 800;
+	letter-spacing: 0.2em;
+	background: linear-gradient(135deg, #ffffff 0%, #c5c9d4 60%, #858997 100%);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.7));
+}
+
+.titanium-card__brand-sub {
+	font-family: 'Inter', sans-serif;
+	font-size: 0.46rem;
+	font-weight: 700;
+	letter-spacing: 0.3em;
+	color: #9094a2;
+	margin-top: 0.2rem;
+}
+
+.titanium-card__contactless {
+	color: #9da1b0;
+	opacity: 0.85;
+	filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+}
+
+/* EMV Chip */
+.titanium-card__chip-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin: 0.4rem 0;
+}
+
+.titanium-card__chip {
+	width: 2.75rem;
+	height: 2.15rem;
+	border-radius: 0.35rem;
+	background: linear-gradient(135deg, #e4e6ee 0%, #bac0cd 50%, #9096a4 100%);
+	border: 1px solid rgba(80, 85, 98, 0.65);
+	box-shadow: 
+		inset 0 1px 1px rgba(255, 255, 255, 0.7),
+		0 2px 5px rgba(0, 0, 0, 0.4);
+	position: relative;
+	overflow: hidden;
+}
+
+.titanium-card__chip-grid {
+	position: absolute;
+	inset: 3px;
+	border: 1px solid rgba(0, 0, 0, 0.25);
+	border-radius: 0.2rem;
+}
+
+.titanium-card__chip-line {
+	position: absolute;
+	background: rgba(0, 0, 0, 0.3);
+}
+
+.titanium-card__chip-line--h {
+	top: 50%;
+	left: 0;
+	right: 0;
+	height: 1px;
+}
+
+.titanium-card__chip-line--v1 {
+	left: 36%;
+	top: 0;
+	bottom: 0;
+	width: 1px;
+}
+
+.titanium-card__chip-line--v2 {
+	right: 36%;
+	top: 0;
+	bottom: 0;
+	width: 1px;
+}
+
+.titanium-card__chip-core {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 0.75rem;
+	height: 0.75rem;
+	transform: translate(-50%, -50%);
+	border: 1px solid rgba(0, 0, 0, 0.3);
+	border-radius: 0.18rem;
+	background: rgba(255, 255, 255, 0.15);
+}
+
+.titanium-card__edition {
+	font-family: 'Inter', sans-serif;
+	font-size: 0.65rem;
+	font-weight: 700;
+	letter-spacing: 0.16em;
+	text-transform: uppercase;
+	color: #8e92a2;
+}
+
+/* Card Digits & Metadata */
+.titanium-card__footer {
+	display: flex;
+	flex-direction: column;
+	gap: 0.7rem;
+}
+
+.titanium-card__number {
+	font-family: 'Courier New', Courier, monospace, sans-serif;
+	font-size: 1.125rem;
+	font-weight: 700;
+	letter-spacing: 0.22em;
+	color: #e4e7f0;
+	text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.titanium-card__meta {
+	display: flex;
+	align-items: flex-end;
+	justify-content: space-between;
+}
+
+.titanium-card__holder,
+.titanium-card__exp {
+	display: flex;
+	flex-direction: column;
+	gap: 0.15rem;
+}
+
+.titanium-card__meta-label {
+	font-family: 'Inter', sans-serif;
+	font-size: 0.52rem;
+	font-weight: 700;
+	letter-spacing: 0.14em;
+	color: #6a6e7e;
+	text-transform: uppercase;
+}
+
+.titanium-card__meta-val {
+	font-family: 'Inter', -apple-system, sans-serif;
+	font-size: 0.78rem;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	color: #d6dae6;
+	text-transform: uppercase;
+	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+.titanium-card__visa {
+	text-align: right;
+	line-height: 0.9;
+	color: #d6dae6;
+}
+
+.titanium-card__visa span {
+	font-family: 'Impact', sans-serif, -apple-system;
+	font-size: 1.45rem;
+	font-style: italic;
+	font-weight: 900;
+	letter-spacing: -0.04em;
+	display: block;
+	filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+.titanium-card__visa small {
+	font-family: 'Inter', sans-serif;
+	font-size: 0.44rem;
+	font-weight: 800;
+	letter-spacing: 0.24em;
+	color: #8c90a0;
+}
+
+/* BACK FACE */
+.titanium-card__mag-stripe {
+	width: 100%;
+	height: 2.85rem;
+	background: #09090b;
+	margin-top: 1.5rem;
+	box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.9);
+}
+
+.titanium-card__back-body {
+	padding: 1.25rem 1.6rem 0.5rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.85rem;
+}
+
+.titanium-card__signature-row {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+}
+
+.titanium-card__signature-strip {
+	flex: 1;
+	height: 1.85rem;
+	background: repeating-linear-gradient(
+		45deg,
+		#c8ccd6,
+		#c8ccd6 8px,
+		#e6e9f0 8px,
+		#e6e9f0 16px
+	);
+	border-radius: 0.2rem;
+	display: flex;
+	align-items: center;
+	padding-left: 0.5rem;
+}
+
+.titanium-card__signature-strip span {
+	font-size: 0.5rem;
+	color: #666a78;
+	font-style: italic;
+}
+
+.titanium-card__cvv {
+	background: #ffffff;
+	color: #000000;
+	font-family: 'Courier New', monospace;
+	font-size: 0.85rem;
+	font-weight: 700;
+	font-style: italic;
+	padding: 0.25rem 0.65rem;
+	border-radius: 0.2rem;
+	letter-spacing: 0.1em;
+}
+
+.titanium-card__disclaimer {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-end;
+}
+
+.titanium-card__disclaimer p {
+	font-size: 0.52rem;
+	line-height: 1.35;
+	color: #626574;
+	max-width: 78%;
+	margin: 0;
+}
+
+.titanium-card__hologram {
+	width: 2.2rem;
+	height: 1.8rem;
+	border-radius: 0.3rem;
+	background: linear-gradient(135deg, #7c7c8c 0%, #484b56 100%);
+	border: 1px solid rgba(255, 255, 255, 0.15);
+	opacity: 0.85;
+}
+
+/* ==========================================================================
+   Lithic-Style Orbital Ellipses Background
+   ========================================================================== */
+
+.lithic-orbits {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 100%;
+	max-width: 1100px;
+	height: 700px;
+	pointer-events: none;
+	z-index: 0;
+	overflow: visible;
+}
+
+.lithic-orbits__svg {
+	width: 100%;
+	height: 100%;
+}
+
+/* ==========================================================================
+   Ultra-Clean Landing Page (Inspired by Lithic & Origin)
+   ========================================================================== */
+
+.nb-auth {
+	background: #000000 !important;
+	position: relative;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	overflow: hidden;
+}
+
+.nb-auth__bar {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 4.5rem;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 2.5rem;
+	z-index: 10;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.nb-auth__signin {
+	font-size: 0.875rem;
+	font-weight: 500;
+	color: #a0a4b2;
+	text-decoration: none;
+	padding: 0.45rem 1.15rem;
+	border-radius: 9999px;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	transition: all 180ms ease;
+}
+
+.nb-auth__signin:hover {
+	color: #ffffff;
+	border-color: rgba(255, 255, 255, 0.25);
+	background: rgba(255, 255, 255, 0.05);
+}
+
+.nb-auth__inner {
+	position: relative;
+	z-index: 2;
+	max-width: 44rem;
+	padding: 4rem 1.5rem;
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.nb-hero-pill {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	background: rgba(255, 255, 255, 0.04);
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	padding: 0.35rem 0.95rem;
+	border-radius: 9999px;
+	font-size: 0.72rem;
+	font-weight: 600;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: #a8acba;
+	margin-bottom: 2rem;
+}
+
+.nb-hero-pill__dot {
+	width: 0.4rem;
+	height: 0.4rem;
+	border-radius: 50%;
+	background: #ffffff;
+	box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+}
+
+.nb-lithic-headline {
+	font-family: 'Outfit', 'Inter', -apple-system, sans-serif !important;
+	font-size: clamp(2.5rem, 5.5vw, 4.25rem) !important;
+	font-weight: 800 !important;
+	line-height: 1.06 !important;
+	letter-spacing: -0.035em !important;
+	color: #ffffff !important;
+	margin-bottom: 1.25rem !important;
+}
+
+.nb-lithic-sub {
+	font-family: 'Inter', sans-serif !important;
+	font-size: clamp(1rem, 2vw, 1.15rem) !important;
+	line-height: 1.6 !important;
+	color: #8c90a0 !important;
+	max-width: 32rem;
+	margin: 0 auto 2.5rem !important;
+}
+
+.nb-lithic-actions {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 1rem;
+	margin-bottom: 3.5rem;
+}
+
+.nb-lithic-cta-primary {
+	background: #ffffff !important;
+	color: #000000 !important;
+	font-family: 'Inter', sans-serif !important;
+	font-weight: 600 !important;
+	font-size: 0.9375rem !important;
+	padding: 0.85rem 2.25rem !important;
+	border-radius: 9999px !important;
+	text-decoration: none !important;
+	transition: all 180ms ease !important;
+	box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15) !important;
+}
+
+.nb-lithic-cta-primary:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 6px 28px rgba(255, 255, 255, 0.25) !important;
+}
+
+.nb-lithic-cta-secondary {
+	background: transparent !important;
+	color: #ffffff !important;
+	font-family: 'Inter', sans-serif !important;
+	font-weight: 500 !important;
+	font-size: 0.9375rem !important;
+	padding: 0.85rem 1.85rem !important;
+	border-radius: 9999px !important;
+	border: 1px solid rgba(255, 255, 255, 0.15) !important;
+	text-decoration: none !important;
+	transition: all 180ms ease !important;
+}
+
+.nb-lithic-cta-secondary:hover {
+	background: rgba(255, 255, 255, 0.06) !important;
+	border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Feature Footnote */
+.nb-lithic-specs {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 2rem;
+	color: #585c6c;
+	font-size: 0.75rem;
+	font-weight: 500;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+.nb-lithic-specs span {
+	display: flex;
+	align-items: center;
+	gap: 0.45rem;
+}
+
+.nb-lithic-specs span::before {
+	content: "";
+	width: 4px;
+	height: 4px;
+	border-radius: 50%;
+	background: #484c5a;
+}
