@@ -31,17 +31,17 @@ const ELEMENTAL_CARDS: (InspectorCardData & WalletCard)[] = [
 		holder: "Alex Morgan",
 		lastFour: "7474",
 		expires: "08/28",
-		materialSpec: "316L Austenitic Stainless Steel",
+		materialSpec: "Precision Brushed Steel",
 		massGrams: 16.0,
 		thicknessMm: 0.84,
-		finish: "Micro-etched topographic dot field",
-		useCase: "Automated treasury & DeFi liquidity routing",
+		finish: "Laser-etched micro-grid surface",
+		useCase: "Executive treasury & operational liquidity",
 		balance: 5750.20,
 		balanceLabel: "Available balance",
 		transactions: [
 			{ id: "g1", merchant: "Adobe Creative Cloud", detail: "Subscription · Today", amount: -54.99 },
-			{ id: "g2", merchant: "AWS", detail: "Invoice #1182 · Yesterday", amount: -312.40 },
-			{ id: "g3", merchant: "Figma", detail: "Subscription · 3 days ago", amount: -15.00 },
+			{ id: "g2", merchant: "AWS Infrastructure", detail: "Invoice #1182 · Yesterday", amount: -312.40 },
+			{ id: "g3", merchant: "Figma Organization", detail: "Subscription · 3 days ago", amount: -15.00 },
 		],
 	},
 	{
@@ -54,17 +54,17 @@ const ELEMENTAL_CARDS: (InspectorCardData & WalletCard)[] = [
 		holder: "Alex Morgan",
 		lastFour: "2343",
 		expires: "12/29",
-		materialSpec: "Grade 5 Titanium, PVD Mirror Polish",
+		materialSpec: "Mirror-Polished Alloy",
 		massGrams: 17.5,
 		thicknessMm: 0.84,
-		finish: "Chromatic interference light dispersion",
-		useCase: "High-volume private custody & settlement",
+		finish: "Specular reflective mirror finish",
+		useCase: "High-volume corporate procurement & supplier payments",
 		balance: 18450.00,
 		balanceLabel: "Current balance",
 		transactions: [
 			{ id: "c1", merchant: "Anthropic API", detail: "Usage · Today", amount: -88.32 },
-			{ id: "c2", merchant: "Vercel Pro", detail: "Monthly · 2 days ago", amount: -20.00 },
-			{ id: "c3", merchant: "USDC Transfer", detail: "Deposit · 4 days ago", amount: +5000.00 },
+			{ id: "c2", merchant: "Vercel Enterprise", detail: "Monthly · 2 days ago", amount: -20.00 },
+			{ id: "c3", merchant: "Treasury Deposit", detail: "Deposit · 4 days ago", amount: +5000.00 },
 		],
 	},
 	{
@@ -77,16 +77,16 @@ const ELEMENTAL_CARDS: (InspectorCardData & WalletCard)[] = [
 		holder: "Alex Morgan",
 		lastFour: "9613",
 		expires: "06/27",
-		materialSpec: "Tungsten Carbide & Matte Ceramic",
-		massGrams: 19.8,
+		materialSpec: "Matte Black Ceramic-Coat",
+		massGrams: 18.0,
 		thicknessMm: 0.84,
-		finish: "Laser-annealed matte matrix, zero front imprint",
-		useCase: "Discretional offline settlement & sovereign custody",
+		finish: "Scratch-resistant matte finish",
+		useCase: "Founder & leadership discretionary spend",
 		balance: 31200.00,
 		balanceLabel: "Settlement reserve",
 		transactions: [
-			{ id: "k1", merchant: "Private Wire", detail: "Outbound SWIFT · Today", amount: -12000.00 },
-			{ id: "k2", merchant: "USDC Bridge", detail: "Inbound · Yesterday", amount: +15000.00 },
+			{ id: "k1", merchant: "Four Seasons Hotel", detail: "Travel & Expense · Today", amount: -1240.00 },
+			{ id: "k2", merchant: "Operating Transfer", detail: "Treasury · Yesterday", amount: +15000.00 },
 		],
 	},
 	{
@@ -99,17 +99,17 @@ const ELEMENTAL_CARDS: (InspectorCardData & WalletCard)[] = [
 		holder: "Alex Morgan",
 		lastFour: "0917",
 		expires: "03/28",
-		materialSpec: "Dual-Tone Anodized 6000-Series Aluminum",
+		materialSpec: "Dual-Tone Anodized Aluminum",
 		massGrams: 12.2,
 		thicknessMm: 0.84,
-		finish: "Bead-blasted dual spectrum, kinetic striations",
-		useCase: "Borderless multi-currency everyday spending",
+		finish: "Bead-blasted dual spectrum linear texture",
+		useCase: "Everyday employee expense & SaaS subscriptions",
 		balance: 2380.50,
 		balanceLabel: "Spent this month",
 		transactions: [
-			{ id: "l1", merchant: "Airbnb", detail: "Lisbon stay · Today", amount: -420.00 },
-			{ id: "l2", merchant: "TAP Air Portugal", detail: "Flight LIS-LHR · Yesterday", amount: -195.00 },
-			{ id: "l3", merchant: "Revolut FX", detail: "EUR→USD · 3 days ago", amount: +840.00 },
+			{ id: "l1", merchant: "Google Workspace", detail: "Seats · Today", amount: -72.00 },
+			{ id: "l2", merchant: "Slack Technologies", detail: "Annual plan · Yesterday", amount: -240.00 },
+			{ id: "l3", merchant: "GitHub Copilot", detail: "Team licenses · 3 days ago", amount: -190.00 },
 		],
 	},
 ];
@@ -156,11 +156,10 @@ export function WalletShowcase({
 				{/* Section headline */}
 				<div className="card-studio-headline">
 					<h2 id="card-studio-title" className="off-bento-h2">
-						Card Architecture
+						Physical & Virtual Cards
 					</h2>
 					<p className="off-bento-lead card-studio-sub">
-						Four elemental editions — each a distinct material specification,
-						engineered for a specific financial function.
+						Four physical card editions engineered for leadership, team procurement, and everyday business spending.
 					</p>
 				</div>
 

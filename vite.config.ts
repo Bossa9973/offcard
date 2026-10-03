@@ -22,7 +22,7 @@ export default defineConfig(({ command, mode }) => {
 		},
 		plugins: [
 			...(design ? [designApiPlugin(), assetDemoPlugin()] : []),
-			cloudflare({ viteEnvironment: { name: "ssr" } }),
+			...(!process.env.NO_CLOUDFLARE ? [cloudflare({ viteEnvironment: { name: "ssr" } })] : []),
 			tailwindcss(),
 			tanstackStart(),
 			viteReact(),

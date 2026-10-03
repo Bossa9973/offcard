@@ -4,7 +4,7 @@ import { SETTLEMENT_STEPS } from "../../content/demoData";
 /**
  * SettlementTimeline: 3-step vertical on-chain settlement progress (Scroll-Craft Kinetic)
  * - Three recessed wells: Authorized -> Converted -> Settled (with txHash)
- * - Sequential illuminated conduit line with pulse animation
+ * - Clear step progression with real-time status indication
  * - Interactive "Simulate swipe" replay trigger with tactile feedback
  * - Respects prefers-reduced-motion
  */
@@ -68,15 +68,6 @@ export function SettlementTimeline() {
 			</div>
 
 			<div className="off-settlement-steps-wrap">
-				{/* Illuminated vertical conduit line connecting the 3 steps */}
-				<div
-					className="off-settlement-conduit"
-					aria-hidden="true"
-					style={{
-						"--conduit-fill": `${Math.min(100, (activeCount / SETTLEMENT_STEPS.length) * 100)}%`,
-					} as React.CSSProperties}
-				/>
-
 				{SETTLEMENT_STEPS.map((item, idx) => {
 					const isVisible = activeCount > idx;
 					const isCurrent = activeCount === idx + 1;

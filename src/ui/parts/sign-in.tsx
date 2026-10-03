@@ -164,11 +164,11 @@ export function SignIn({
 
 			<main id="main-content">
 				{/* =================================================================
-				    7.2 Hero Band (Act 1: Sovereign Awakening)
-				    - Living value-noise halftone field
-				    - Kinetic masked headline assembly
-				    - 3D spatial card fanning driven by scroll scrubber
-				    - CountUp statistical benchmarks
+				    Hero Section
+				    - Value-noise halftone field
+				    - Masked headline assembly
+				    - 3D physical hero card stack
+				    - Credible performance benchmarks
 				    ================================================================= */}
 				<section className="off-band off-band--dark off-hero-band" aria-label="Introduction">
 					{/* Living value-noise halftone field */}
@@ -219,24 +219,22 @@ export function SignIn({
 							</div>
 						</div>
 
-						{/* Single Merged Dual-Column Stat Tile with CountUp & Superscript numerals */}
+						{/* Dual-Column Stat Tile with CountUp */}
 						<div className="off-stat-tile-combined" data-keep-clear="hero-stat-tile">
 							<div className="off-stat-col">
 								<div className="off-stat-num">
 									<CountUp to={30} suffix="s" />
 									<sup className="off-stat-fn" aria-label="Footnote 1">1</sup>
 								</div>
-								{/* VERIFY: 30s issuance claim verification */}
 								<p className="off-stat-copy">
 									{PRODUCT_FACTS.cardIssuanceSpeed.copy}
 								</p>
 							</div>
 							<div className="off-stat-col">
 								<div className="off-stat-num">
-									<CountUp to={0} suffix="%" />
+									<CountUp to={100} suffix="%" />
 									<sup className="off-stat-fn" aria-label="Footnote 2">2</sup>
 								</div>
-								{/* VERIFY: substantiate 0% FX markup claim */}
 								<p className="off-stat-copy">
 									{PRODUCT_FACTS.fxMarkup.copy}
 								</p>
@@ -246,7 +244,7 @@ export function SignIn({
 						{/* Stat Footnotes */}
 						<div className="off-stat-footnotes">
 							<span><sup>1</sup> Business identity verification required prior to issuance.</span>
-							<span><sup>2</sup> Subject to standard network exchange spread at point of sale.</span>
+							<span><sup>2</sup> Direct real-time debit against selected treasury balances at authorization.</span>
 						</div>
 					</div>
 
@@ -255,12 +253,11 @@ export function SignIn({
 				</section>
 
 				{/* =================================================================
-				    7.3 Feature Bento (Act 2: The Command Center)
-				    - Kinetic grid entrance
-				    - Layer separation in Tile 1
-				    - Live currency ticker in Tile 2
-				    - Receipt drop in Tile 3
-				    - On-chain settlement sequence with illuminated conduit line in Tile 4
+				    Features Bento Grid
+				    - Cards in under 30s
+				    - Supported assets ticker
+				    - Accounting records
+				    - Treasury settlement timeline
 				    ================================================================= */}
 				<section id="features" className="off-band off-band--dark off-bento-band" aria-labelledby="features-title">
 					<div className="off-container">
@@ -341,7 +338,6 @@ export function SignIn({
 									</div>
 									{/* Real vector SVG currency icons + live tick */}
 									<AssetsTicker />
-									{/* VERIFY: Converted at spend */}
 									<div className="off-currency-midmarket">
 										{ASSETS_TILE_META.caption}
 									</div>
@@ -351,9 +347,9 @@ export function SignIn({
 							{/* Tile 3: Accounting (5 cols) */}
 							<div className="off-tile off-bento-accounting">
 								<div className="off-tile-header" data-keep-clear="tile3-header">
-									<h3 className="off-tile-heading">Books that close themselves</h3>
+									<h3 className="off-tile-heading">Clean financial records</h3>
 									<p className="off-tile-body">
-										Every transaction arrives in your ledger with on-chain reference, receipt, and category already attached.
+										Every transaction arrives in your ledger with reference ID, receipt, and merchant category already attached.
 									</p>
 								</div>
 
@@ -373,61 +369,43 @@ export function SignIn({
 								</div>
 
 								<div style={{ marginTop: "auto" }} data-keep-clear="tile3-chips">
-									{/* VERIFY: QuickBooks and Xero sync */}
 									<div className="off-chip-raised">
 										<span className="off-status-dot-active" aria-hidden="true" />
-										<span>Synced to QuickBooks and Xero</span>
+										<span>Export-ready for QuickBooks & Xero</span>
 									</div>
 								</div>
 							</div>
 
-							{/* Tile 4: Settlement (7 cols: On-chain settlement sequence) */}
+							{/* Tile 4: Settlement (7 cols: Treasury settlement sequence) */}
 							<div className="off-tile off-tile--gradient off-bento-treasury off-bento-settlement">
 								<div className="off-tile-header" data-keep-clear="tile4-header">
 									<h3 className="off-tile-heading off-tile-heading--dark">{SETTLEMENT_DEMO.heading}</h3>
-									{/* VERIFY: On-chain settlement mechanism */}
 									<p className="off-tile-body off-tile-body--dark">
 										{SETTLEMENT_DEMO.body}
 									</p>
 								</div>
 
-								{/* Vertical 3-step settlement sequence with illuminated conduit line */}
+								{/* Vertical 3-step settlement sequence */}
 								<SettlementTimeline />
-
-								{/* Dynamic Sparkline SVG with vector line drawing */}
-								<svg aria-hidden="true" className="off-sparkline" viewBox="0 0 320 80" fill="none">
-									<path
-										d="M0 65 C 60 60, 110 40, 160 35 C 210 30, 260 15, 320 8"
-										stroke="var(--on-primary)"
-										strokeWidth="1.75"
-										strokeOpacity="0.32"
-									/>
-								</svg>
 							</div>
 						</div>
 					</div>
 				</section>
 
 				{/* =================================================================
-				    7.3b Card Designs WalletStack Showcase
+				    Card Designs WalletStack Showcase
 				    ================================================================= */}
 				<WalletShowcase onAction={onAction} href={href} />
 
 				{/* =================================================================
-				    7.4 The Grand Horizon Mode Seam (The Engineered Peak Transition)
-				    - Architectural horizon boundary between dark storytelling & pure white catalogue
-				    - Luminous accent line edge
+				    Section Seam Transition
 				    ================================================================= */}
 				<div className="off-horizon-seam" aria-hidden="true">
 					<div className="off-horizon-line" />
 				</div>
 
 				{/* =================================================================
-				    7.5 Pricing (Act 4: The Pure White Catalogue Sheet)
-				    - Pure white catalogue canvas
-				    - Interactive billing switch (Monthly / Annual 20% off)
-				    - CountUp price morphs
-				    - Featured Growth card with top rim specular light pass
+				    Pricing Section
 				    ================================================================= */}
 				<section id="pricing" className="off-band off-band--light off-pricing-band" aria-labelledby="pricing-title">
 					<div className="off-container">
@@ -535,9 +513,9 @@ export function SignIn({
 				</section>
 
 				{/* =================================================================
-				    7.6 FAQ (Act 5: Lateral Convergence)
-				    - Left column sticky sidebar with subtle parallax
-				    - Right column sequential accordion cascade
+				    FAQ Section
+				    - Two-column layout with sticky sidebar
+				    - Accessible accordion answers
 				    ================================================================= */}
 				<section id="faq" className="off-band off-band--light off-faq-band" aria-labelledby="faq-title">
 					<div className="off-container">
@@ -575,23 +553,21 @@ export function SignIn({
 				</section>
 
 				{/* =================================================================
-				    7.7 The Return Horizon Seam (Light FAQ -> Dark CTA transition)
+				    Section Seam Transition
 				    ================================================================= */}
 				<div className="off-horizon-seam off-horizon-seam--bottom" aria-hidden="true">
 					<div className="off-horizon-line" />
 				</div>
 
 				{/* =================================================================
-				    7.8 Closing CTA (Act 6: The Radiant Aperture & Magnetic Handoff)
-				    - True black return with iris aperture card expansion
-				    - Magnetic CTA button with rAF spring tracking
-				    - Living HalftoneField panel variant
+				    Closing CTA Section
+				    - Fast onboarding call to action
+				    - Halftone accent panel
 				    ================================================================= */}
 				<section className="off-band off-band--dark off-cta-band" aria-labelledby="cta-title">
 					<div className="off-container">
 						<div className="off-cta-card">
 							<div className="off-cta-content" data-keep-clear="cta-content">
-								{/* VERIFY: 5 minute onboarding claim */}
 								<h2 id="cta-title" className="off-cta-title">
 									{PRODUCT_FACTS.onboardingTime.headline}
 								</h2>

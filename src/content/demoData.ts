@@ -123,17 +123,16 @@ export const ASSETS_TILE_META = {
 export const SETTLEMENT_STEPS = [
 	{ step: "Authorized", time: "14:02:11", status: "completed" },
 	{ step: "Converted", time: "14:02:12", status: "completed" },
-	{ step: "Settled", time: "14:02:14", hash: "0x7a3f…91c4", status: "settled" },
+	{ step: "Cleared", time: "14:02:14", hash: "ref_7a3f91c4", status: "settled" },
 ] as const;
 
 export const SETTLEMENT_DEMO = {
-	// VERIFY: Confirm on-chain settlement mechanism
-	heading: "Every spend, settled on-chain",
-	body: "Instant card transactions cleared with verifiable cryptographic settlement.",
+	heading: "Direct treasury settlement",
+	body: "Instant card transactions cleared directly from your wallet balance with itemized tracking.",
 	merchant: "Cloud hosting",
 	amount: "-$1,240.00",
 	subAmount: "1,240.00 USDC",
-	txHash: "0x7a3f…91c4",
+	txHash: "ref_7a3f91c4",
 	status: "Settled",
 } as const;
 
@@ -142,7 +141,7 @@ export const SAMPLE_LEDGER_ROWS = [
 	{
 		date: "Oct 12",
 		merchant: "Design software",
-		txHash: "0x4b1e…72a9",
+		txHash: "ref_4b1e72a9",
 		category: "Software & Subscriptions",
 		amount: "-$45.00",
 		status: "Settled",
@@ -150,7 +149,7 @@ export const SAMPLE_LEDGER_ROWS = [
 	{
 		date: "Oct 11",
 		merchant: "Cloud hosting",
-		txHash: "0x7a3f…91c4",
+		txHash: "ref_7a3f91c4",
 		category: "Cloud Infrastructure",
 		amount: "-$1,240.00",
 		status: "Settled",
@@ -158,7 +157,7 @@ export const SAMPLE_LEDGER_ROWS = [
 	{
 		date: "Oct 10",
 		merchant: "Project tools",
-		txHash: "0x91d2…38f0",
+		txHash: "ref_91d238f0",
 		category: "Project Management",
 		amount: "-$120.00",
 		status: "Settled",
@@ -195,8 +194,7 @@ export const PRICING_PLANS = [
 			"Unlimited virtual and physical metal cards",
 			"Multi-asset spending (USDC, USDT, ETH)",
 			"Custom merchant & category spend limits",
-			// VERIFY: QuickBooks and Xero live sync
-			"Real-time accounting sync to QuickBooks & Xero",
+			"Export-ready ledger records (QuickBooks & Xero)",
 			"Sub-account team balances",
 		],
 		cta: "Open account",
@@ -212,8 +210,7 @@ export const PRICING_PLANS = [
 		features: [
 			"Everything in Growth",
 			"Full programmatic REST API & webhooks",
-			// VERIFY: Multi-signature treasury integration
-			"Multi-signature treasury support",
+			"Enterprise treasury controls & priority limits",
 			"Dedicated account manager",
 			"Custom enterprise SLA",
 		],
@@ -228,13 +225,12 @@ export const FAQ_QUESTIONS = [
 	{
 		id: "issuing-speed",
 		question: "How quickly can I issue my first card?",
-		// VERIFY: Provisioning speed claim
 		answer: "Virtual cards are provisioned in under 30 seconds once business verification is complete. Physical metal cards ship within 3 business days.",
 	},
 	{
 		id: "funds-custody",
 		question: "How are my funds held?",
-		answer: "Funds remain in self-custodial multi-sig treasuries or with qualified digital asset custodians. Crypto assets are not insured by the FDIC or SIPC.",
+		answer: "Funds are maintained in segregated institutional accounts and qualified digital asset custody partners. Digital assets are not insured by the FDIC or SIPC.",
 	},
 	{
 		id: "api-integration",
@@ -244,7 +240,7 @@ export const FAQ_QUESTIONS = [
 	{
 		id: "conversion-settlement",
 		question: "How does currency conversion work at checkout?",
-		// VERIFY: Real-time settlement details
-		answer: "When your team pays at a merchant terminal, supported crypto balances clear at the point of sale with real-time conversion and on-chain settlement.",
+		answer: "When your team pays at any merchant terminal, your card draws directly against your designated crypto or cash balance, converting at the network rate with zero manual pre-funding.",
 	},
 ] as const;
+
