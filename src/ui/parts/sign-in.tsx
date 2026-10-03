@@ -10,6 +10,8 @@ import { SpendMeter } from "../components/spend-meter";
 import { SettlementTimeline } from "../components/settlement-timeline";
 import { AssetsTicker } from "../components/assets-ticker";
 import { useTileSpotlight } from "../hooks/use-tile-spotlight";
+import { useScrollCraft } from "../hooks/use-scroll-craft";
+import { WalletShowcase } from "./wallet-showcase";
 import {
 	ASSETS_TILE_META,
 	SETTLEMENT_DEMO,
@@ -39,20 +41,28 @@ export function SignIn({
 	const currentYear = new Date().getFullYear();
 	const pageRef = useRef<HTMLDivElement>(null);
 	const [scrolled, setScrolled] = useState(false);
+	const [scrollProgress, setScrollProgress] = useState(0);
 	const [activeSection, setActiveSection] = useState<string>("features");
+	const [billingPeriod, setBillingPeriod] = useState<"monthly" | "annual">("monthly");
 
 	// Desktop tile cursor spotlight (Pass 5, Section 4.7)
 	useTileSpotlight(pageRef);
 
-	// Navigation scroll compaction & active section tracking (Pass 5, Section 4.9 & 5.1)
+	// Scroll-Craft timeline, 3D card fanning, horizon wipe & kinetic reveals
+	useScrollCraft(pageRef);
+
+	// Navigation scroll compaction & active section tracking
 	useEffect(() => {
 		const onScroll = () => {
 			setScrolled(window.scrollY > 24);
+			const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+			if (maxScroll > 0) {
+				setScrollProgress(Math.min(100, Math.max(0, (window.scrollY / maxScroll) * 100)));
+			}
 		};
 		window.addEventListener("scroll", onScroll, { passive: true });
 		onScroll();
 
-		// Track active section for nav underline
 		const sections = ["features", "pricing", "faq"];
 		const observer = new IntersectionObserver(
 			(entries) => {
@@ -76,6 +86,25 @@ export function SignIn({
 		};
 	}, []);
 
+	const getPlanPricing = (planId: string) => {
+		if (planId === "starter") {
+			return { priceNum: 0, periodText: "/month" };
+		}
+		if (planId === "growth") {
+			return {
+				priceNum: billingPeriod === "annual" ? 23 : 29,
+				periodText: billingPeriod === "annual" ? "/month, billed annually" : "/month",
+			};
+		}
+		if (planId === "scale") {
+			return {
+				priceNum: billingPeriod === "annual" ? 79 : 99,
+				periodText: billingPeriod === "annual" ? "/month, billed annually" : "/month",
+			};
+		}
+		return { priceNum: 0, periodText: "/month" };
+	};
+
 	return (
 		<div ref={pageRef} className="off-page">
 			{/* Accessibility Skip link */}
@@ -84,10 +113,16 @@ export function SignIn({
 			</a>
 
 			{/* =================================================================
-			    7.1 Nav (Pass 5, Section 4.9 & 5.1: 64px -> 56px on scroll,
-			    rgba(0,0,0,0.92) blur(16px), zero grey strip, clean over white band)
+			    7.1 Nav (Scroll-Craft Compact Bar with Dynamic Scroll Progress Line)
 			    ================================================================= */}
 			<header className={`off-nav-sticky ${scrolled ? "off-nav-sticky--scrolled" : ""}`}>
+				{/* Dynamic scroll journey progress line */}
+				<div
+					className="off-nav-scroll-progress"
+					style={{ width: `${scrollProgress.toFixed(1)}%` }}
+					aria-hidden="true"
+				/>
+
 				<div className="off-nav-container">
 					<a href="/" className="off-brand-link" aria-label="Off-Card Home" data-keep-clear="nav-brand">
 						<Wordmark variant="dark" size="md" />
@@ -129,8 +164,11 @@ export function SignIn({
 
 			<main id="main-content">
 				{/* =================================================================
-				    7.2 Hero Band (Pass 5, Section 3.2: Living HalftoneField background,
-				    staggered entrance, fully rendered Moneta cards, no overlaps)
+				    7.2 Hero Band (Act 1: Sovereign Awakening)
+				    - Living value-noise halftone field
+				    - Kinetic masked headline assembly
+				    - 3D spatial card fanning driven by scroll scrubber
+				    - CountUp statistical benchmarks
 				    ================================================================= */}
 				<section className="off-band off-band--dark off-hero-band" aria-label="Introduction">
 					{/* Living value-noise halftone field */}
@@ -138,11 +176,15 @@ export function SignIn({
 
 					<div className="off-container" style={{ position: "relative", zIndex: 2 }}>
 						<div className="off-hero-grid">
-							{/* Left Column (6 cols): 2-line uppercase headline & crypto copy */}
+							{/* Left Column (6 cols): Kinetic masked headline & crypto copy */}
 							<div className="off-hero-content" data-keep-clear="hero-text">
 								<h1 className="off-hero-h1">
-									<span className="off-hero-line off-hero-line--1">Spend crypto</span>
-									<span className="off-hero-line off-hero-line--2">like cash</span>
+									<span className="off-hero-line-mask">
+										<span className="off-hero-line off-hero-line--1">Spend crypto</span>
+									</span>
+									<span className="off-hero-line-mask">
+										<span className="off-hero-line off-hero-line--2">like cash</span>
+									</span>
 								</h1>
 
 								<p className="off-hero-lead">
@@ -150,15 +192,17 @@ export function SignIn({
 								</p>
 
 								<div className="off-hero-ctas">
-									<Button
-										variant="primary"
-										size="md"
-										icon={true}
-										href={onAction ? undefined : href}
-										onClick={onAction}
-									>
-										Open account
-									</Button>
+									<div data-sc-magnet="0.22" style={{ display: "inline-block" }}>
+										<Button
+											variant="primary"
+											size="md"
+											icon={true}
+											href={onAction ? undefined : href}
+											onClick={onAction}
+										>
+											Open account
+										</Button>
+									</div>
 									<Button
 										variant="outline-dark"
 										size="md"
@@ -175,7 +219,7 @@ export function SignIn({
 							</div>
 						</div>
 
-						{/* Single Merged Dual-Column Stat Tile with CountUp & Superscript numerals (Pass 5, Section 4.5 & 5.3) */}
+						{/* Single Merged Dual-Column Stat Tile with CountUp & Superscript numerals */}
 						<div className="off-stat-tile-combined" data-keep-clear="hero-stat-tile">
 							<div className="off-stat-col">
 								<div className="off-stat-num">
@@ -211,7 +255,12 @@ export function SignIn({
 				</section>
 
 				{/* =================================================================
-				    7.3 Feature Bento (Pass 5, Section 2: Overlap & Cropping Fixes)
+				    7.3 Feature Bento (Act 2: The Command Center)
+				    - Kinetic grid entrance
+				    - Layer separation in Tile 1
+				    - Live currency ticker in Tile 2
+				    - Receipt drop in Tile 3
+				    - On-chain settlement sequence with illuminated conduit line in Tile 4
 				    ================================================================= */}
 				<section id="features" className="off-band off-band--dark off-bento-band" aria-labelledby="features-title">
 					<div className="off-container">
@@ -226,13 +275,7 @@ export function SignIn({
 						</div>
 
 						<div className="off-bento-grid-12">
-							{/* Tile 1: Cards in Under 30s (7 cols, Pass 5, Section 2.1)
-							    - Toast removed! (Hero only)
-							    - Text block top-left (max-width: 30ch)
-							    - Spend limit meter left-middle
-							    - Pinned bottom-left chips row (max-width: 52%)
-							    - Bleeding visual right and bottom (width 58%, max 6% bleed)
-							*/}
+							{/* Tile 1: Cards in Under 30s (7 cols) */}
 							<div className="off-tile off-tile--raised off-bento-cards">
 								<div className="off-tile-header" style={{ maxWidth: "30ch", position: "relative", zIndex: 4 }} data-keep-clear="tile1-text">
 									<h3 className="off-tile-heading">Cards in under 30 seconds</h3>
@@ -241,12 +284,12 @@ export function SignIn({
 									</p>
 								</div>
 
-								{/* Left-middle: Spend Limit Meter (Pass 5, Section 2.1) */}
+								{/* Left-middle: Spend Limit Meter with fluid progress animation */}
 								<div className="cards-tile__meter-wrap" style={{ position: "relative", zIndex: 4, maxWidth: "48%", marginTop: "16px" }}>
 									<SpendMeter />
 								</div>
 
-								{/* Anchored Visual: Fully rendered dark card behind, light front card, max 6% bleed */}
+								{/* Anchored Visual: Fully rendered dark card behind, light front card, micro-parallax */}
 								<div className="cards-tile__visual" aria-hidden="true">
 									<div className="cards-tile__back">
 										<BankCard
@@ -275,7 +318,7 @@ export function SignIn({
 									</div>
 								</div>
 
-								{/* Pinned Bottom-Left Raised Chips (max-width: 52% - zero collision with card) */}
+								{/* Pinned Bottom-Left Raised Chips */}
 								<div className="cards-tile__chips" data-keep-clear="tile1-chips">
 									<span className="off-chip-raised">Single-use</span>
 									<span className="off-chip-raised">Recurring</span>
@@ -283,7 +326,7 @@ export function SignIn({
 								</div>
 							</div>
 
-							{/* Tile 2: Assets (5 cols, Pass 5: Real SVG icons & live tick demo) */}
+							{/* Tile 2: Assets (5 cols) */}
 							<div className="off-tile off-bento-currency">
 								<div className="off-tile-header" data-keep-clear="tile2-header">
 									<h3 className="off-tile-heading">{ASSETS_TILE_META.heading}</h3>
@@ -305,7 +348,7 @@ export function SignIn({
 								</div>
 							</div>
 
-							{/* Tile 3: Accounting (5 cols, neutral demo merchants - Pass 5, Section 5.5) */}
+							{/* Tile 3: Accounting (5 cols) */}
 							<div className="off-tile off-bento-accounting">
 								<div className="off-tile-header" data-keep-clear="tile3-header">
 									<h3 className="off-tile-heading">Books that close themselves</h3>
@@ -338,7 +381,7 @@ export function SignIn({
 								</div>
 							</div>
 
-							{/* Tile 4: Settlement (7 cols, Pass 5, Section 2.2: 3-step timeline) */}
+							{/* Tile 4: Settlement (7 cols: On-chain settlement sequence) */}
 							<div className="off-tile off-tile--gradient off-bento-treasury off-bento-settlement">
 								<div className="off-tile-header" data-keep-clear="tile4-header">
 									<h3 className="off-tile-heading off-tile-heading--dark">{SETTLEMENT_DEMO.heading}</h3>
@@ -348,16 +391,16 @@ export function SignIn({
 									</p>
 								</div>
 
-								{/* Vertical 3-step settlement sequence (Authorized -> Converted -> Settled) */}
+								{/* Vertical 3-step settlement sequence with illuminated conduit line */}
 								<SettlementTimeline />
 
-								{/* Decorative Sparkline SVG */}
+								{/* Dynamic Sparkline SVG with vector line drawing */}
 								<svg aria-hidden="true" className="off-sparkline" viewBox="0 0 320 80" fill="none">
 									<path
 										d="M0 65 C 60 60, 110 40, 160 35 C 210 30, 260 15, 320 8"
 										stroke="var(--on-primary)"
-										strokeWidth="1.5"
-										strokeOpacity="0.28"
+										strokeWidth="1.75"
+										strokeOpacity="0.32"
 									/>
 								</svg>
 							</div>
@@ -366,7 +409,25 @@ export function SignIn({
 				</section>
 
 				{/* =================================================================
-				    7.4 Pricing (Light Catalogue Band, Lifted White Cards, Pass 5)
+				    7.3b Card Designs WalletStack Showcase
+				    ================================================================= */}
+				<WalletShowcase onAction={onAction} href={href} />
+
+				{/* =================================================================
+				    7.4 The Grand Horizon Mode Seam (The Engineered Peak Transition)
+				    - Architectural horizon boundary between dark storytelling & pure white catalogue
+				    - Luminous accent line edge
+				    ================================================================= */}
+				<div className="off-horizon-seam" aria-hidden="true">
+					<div className="off-horizon-line" />
+				</div>
+
+				{/* =================================================================
+				    7.5 Pricing (Act 4: The Pure White Catalogue Sheet)
+				    - Pure white catalogue canvas
+				    - Interactive billing switch (Monthly / Annual 20% off)
+				    - CountUp price morphs
+				    - Featured Growth card with top rim specular light pass
 				    ================================================================= */}
 				<section id="pricing" className="off-band off-band--light off-pricing-band" aria-labelledby="pricing-title">
 					<div className="off-container">
@@ -377,64 +438,94 @@ export function SignIn({
 							<p className="off-section-sub">
 								Start free. Upgrade when you need more cards, multi-asset spending, or programmatic API access.
 							</p>
+
+							{/* Interactive Billing Frequency Switcher */}
+							<div className="off-billing-toggle-wrap" data-keep-clear="pricing-toggle">
+								<div className="off-billing-toggle" role="radiogroup" aria-label="Billing frequency selection">
+									<button
+										type="button"
+										role="radio"
+										aria-checked={billingPeriod === "monthly"}
+										className={`off-billing-btn ${billingPeriod === "monthly" ? "off-billing-btn--active" : ""}`}
+										onClick={() => setBillingPeriod("monthly")}
+									>
+										Monthly
+									</button>
+									<button
+										type="button"
+										role="radio"
+										aria-checked={billingPeriod === "annual"}
+										className={`off-billing-btn ${billingPeriod === "annual" ? "off-billing-btn--active" : ""}`}
+										onClick={() => setBillingPeriod("annual")}
+									>
+										<span>Annual</span>
+										<span className="off-billing-discount">Save 20%</span>
+									</button>
+								</div>
+							</div>
 						</div>
 
 						<div className="off-pricing-grid">
-							{PRICING_PLANS.map((plan, idx) => (
-								<div
-									key={plan.id}
-									className={`off-plan-card ${plan.featured ? "off-plan-card--featured" : ""}`}
-									style={{ "--i": idx } as React.CSSProperties}
-									data-keep-clear={`plan-${plan.id}`}
-								>
-									{plan.featured && (
-										<div className="off-plan-badge">MOST POPULAR</div>
-									)}
+							{PRICING_PLANS.map((plan, idx) => {
+								const { priceNum, periodText } = getPlanPricing(plan.id);
+								return (
+									<div
+										key={plan.id}
+										className={`off-plan-card ${plan.featured ? "off-plan-card--featured" : ""}`}
+										style={{ "--i": idx } as React.CSSProperties}
+										data-keep-clear={`plan-${plan.id}`}
+									>
+										{plan.featured && (
+											<div className="off-plan-badge">MOST POPULAR</div>
+										)}
 
-									<div className="off-plan-top">
-										<h3 className="off-plan-name">{plan.name}</h3>
-										<div className="off-plan-price">
-											<CountUp to={parseInt(plan.price.replace("$", ""), 10)} prefix="$" />
-											<span className="off-plan-period">{plan.period}</span>
+										<div className="off-plan-top">
+											<h3 className="off-plan-name">{plan.name}</h3>
+											<div className="off-plan-price">
+												<CountUp to={priceNum} prefix="$" />
+												<span className="off-plan-period">{periodText}</span>
+											</div>
+											<p className="off-plan-desc">{plan.description}</p>
+
+											<ul className="off-plan-features">
+												{plan.features.map((feat) => (
+													<li key={feat} className="off-plan-feature-item">
+														<svg
+															className="off-check-icon"
+															width="16"
+															height="16"
+															viewBox="0 0 24 24"
+															fill="none"
+															stroke="currentColor"
+															strokeWidth="2"
+															strokeLinecap="round"
+															strokeLinejoin="round"
+															aria-hidden="true"
+														>
+															<polyline points="20 6 9 17 4 12" />
+														</svg>
+														<span>{feat}</span>
+													</li>
+												))}
+											</ul>
 										</div>
-										<p className="off-plan-desc">{plan.description}</p>
 
-										<ul className="off-plan-features">
-											{plan.features.map((feat) => (
-												<li key={feat} className="off-plan-feature-item">
-													<svg
-														className="off-check-icon"
-														width="16"
-														height="16"
-														viewBox="0 0 24 24"
-														fill="none"
-														stroke="currentColor"
-														strokeWidth="2"
-														strokeLinecap="round"
-														strokeLinejoin="round"
-														aria-hidden="true"
-													>
-														<polyline points="20 6 9 17 4 12" />
-													</svg>
-													<span>{feat}</span>
-												</li>
-											))}
-										</ul>
+										<div className="off-plan-bottom">
+											<div data-sc-magnet={plan.featured ? "0.18" : undefined} style={{ width: "100%" }}>
+												<Button
+													variant={plan.variant}
+													size="md"
+													href={onAction ? undefined : href}
+													onClick={onAction}
+													className="off-plan-cta"
+												>
+													{plan.cta}
+												</Button>
+											</div>
+										</div>
 									</div>
-
-									<div className="off-plan-bottom">
-										<Button
-											variant={plan.variant}
-											size="md"
-											href={onAction ? undefined : href}
-											onClick={onAction}
-											className="off-plan-cta"
-										>
-											{plan.cta}
-										</Button>
-									</div>
-								</div>
-							))}
+								);
+							})}
 						</div>
 
 						<p className="off-pricing-footnote">
@@ -444,7 +535,9 @@ export function SignIn({
 				</section>
 
 				{/* =================================================================
-				    7.5 FAQ (Light Band, Sticky Sidebar, Animated Accordion, Pass 5)
+				    7.6 FAQ (Act 5: Lateral Convergence)
+				    - Left column sticky sidebar with subtle parallax
+				    - Right column sequential accordion cascade
 				    ================================================================= */}
 				<section id="faq" className="off-band off-band--light off-faq-band" aria-labelledby="faq-title">
 					<div className="off-container">
@@ -482,7 +575,17 @@ export function SignIn({
 				</section>
 
 				{/* =================================================================
-				    7.6 Closing CTA (Dark Band, HalftoneField panel variant, Pass 5)
+				    7.7 The Return Horizon Seam (Light FAQ -> Dark CTA transition)
+				    ================================================================= */}
+				<div className="off-horizon-seam off-horizon-seam--bottom" aria-hidden="true">
+					<div className="off-horizon-line" />
+				</div>
+
+				{/* =================================================================
+				    7.8 Closing CTA (Act 6: The Radiant Aperture & Magnetic Handoff)
+				    - True black return with iris aperture card expansion
+				    - Magnetic CTA button with rAF spring tracking
+				    - Living HalftoneField panel variant
 				    ================================================================= */}
 				<section className="off-band off-band--dark off-cta-band" aria-labelledby="cta-title">
 					<div className="off-container">
@@ -495,15 +598,17 @@ export function SignIn({
 								<p className="off-cta-desc">
 									{PRODUCT_FACTS.onboardingTime.body}
 								</p>
-								<Button
-									variant="primary"
-									size="md"
-									icon={true}
-									href={onAction ? undefined : href}
-									onClick={onAction}
-								>
-									Open account
-								</Button>
+								<div data-sc-magnet="0.25" style={{ display: "inline-block" }}>
+									<Button
+										variant="primary"
+										size="md"
+										icon={true}
+										href={onAction ? undefined : href}
+										onClick={onAction}
+									>
+										Open account
+									</Button>
+								</div>
 							</div>
 
 							{/* Living HalftoneField panel variant (right 40% only) */}
@@ -516,7 +621,7 @@ export function SignIn({
 			</main>
 
 			{/* =================================================================
-			    7.7 Footer (Pass 5, Section 5.4: Merged single clean disclosure)
+			    7.8 Footer (Merged single clean disclosure)
 			    ================================================================= */}
 			<footer className="off-footer">
 				<div className="off-container">
@@ -536,7 +641,6 @@ export function SignIn({
 					</div>
 
 					<div className="off-footer-legal" data-keep-clear="footer-legal">
-						{/* Single Merged Clean Disclosure without placeholders */}
 						<p className="off-legal-disclosure">
 							Off-Card is a financial technology platform, not a bank. Crypto assets are volatile and not insured by the FDIC or SIPC. Cards are issued pursuant to licenses from payment card networks.
 						</p>

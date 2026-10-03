@@ -4,6 +4,7 @@
 @import 'frosted-ui/styles.lite.css' layer(frosted_ui);
 @import './ui/styles.css';
 @import './ui/luxury-card.css';
+@import './ui/components/wallet-stack.css';
 @import './ui/revolut-theme.css';
 
 @source '.';

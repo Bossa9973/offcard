@@ -37,20 +37,36 @@ export function AssetsTicker() {
 		return () => clearInterval(timer);
 	}, []);
 
+	const [selectedCode, setSelectedCode] = useState<string>("USDC");
+
 	return (
-		<div className="off-currency-rows" data-keep-clear="currency-rows">
+		<div className="off-currency-rows" data-keep-clear="currency-rows" role="radiogroup" aria-label="Available crypto funding currencies">
 			{assets.map((item) => {
 				const isTicking = tickingCode === item.code;
+				const isSelected = selectedCode === item.code;
 				return (
 					<div
 						key={item.code}
-						className={`off-well off-currency-row ${isTicking ? "off-currency-row--ticking" : ""}`}
+						role="radio"
+						aria-checked={isSelected}
+						tabIndex={0}
+						className={`off-well off-currency-row ${isTicking ? "off-currency-row--ticking" : ""} ${isSelected ? "off-currency-row--selected" : ""}`}
+						onClick={() => setSelectedCode(item.code)}
+						onKeyDown={(e) => {
+							if (e.key === "Enter" || e.key === " ") {
+								e.preventDefault();
+								setSelectedCode(item.code);
+							}
+						}}
 					>
 						<div className="off-currency-left">
 							{/* Real SVG vector currency badge */}
 							<CurrencyIcon code={item.code} size={28} />
 							<div className="off-currency-names">
-								<span className="off-currency-name">{item.code}</span>
+								<div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+									<span className="off-currency-name">{item.code}</span>
+									{isSelected && <span className="off-curr-active-badge">Active</span>}
+								</div>
 								<span className="off-currency-subname">{item.name}</span>
 							</div>
 						</div>
@@ -64,4 +80,5 @@ export function AssetsTicker() {
 			})}
 		</div>
 	);
+
 }

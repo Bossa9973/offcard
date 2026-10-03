@@ -1,0 +1,452 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   WalletStack v2 – Elemental Card Editions
+   ID-1 card ratio: 85.6 × 53.98 mm → 1.586:1
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Root ─────────────────────────────────────────────────────────────────── */
+
+.ws-root {
+  width: min(100%, 22rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  outline: none;
+  position: relative;
+}
+
+/* ─── Screen-reader helpers ────────────────────────────────────────────────── */
+
+.ws-sr-hint {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ─── Header bar ───────────────────────────────────────────────────────────── */
+
+.ws-header {
+  display: flex;
+  align-items: center;
+  height: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.ws-header-label {
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.40);
+  text-transform: uppercase;
+}
+
+.ws-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.60);
+  background: none;
+  border: none;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+  margin-left: -0.5rem;
+}
+
+.ws-back-btn:hover {
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ─── Stage ────────────────────────────────────────────────────────────────── */
+
+.ws-stage {
+  position: relative;
+  height: calc(min(100%, 22rem) / 1.586 + 3rem);
+  perspective: 1400px;
+  perspective-origin: 50% 28%;
+}
+
+/* ─── Individual card button ───────────────────────────────────────────────── */
+
+.ws-stack-card {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  aspect-ratio: 85.6 / 53.98;
+  border-radius: 14px;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transform-origin: center bottom;
+  will-change: transform, opacity;
+  box-shadow:
+    0 4px 18px rgba(0, 0, 0, 0.32),
+    0 1px 4px rgba(0, 0, 0, 0.24);
+  transition: box-shadow 0.3s;
+  isolation: isolate;
+}
+
+.ws-stack-card--front {
+  box-shadow:
+    0 10px 36px rgba(0, 0, 0, 0.42),
+    0 3px 8px rgba(0, 0, 0, 0.28);
+}
+
+.ws-stage--fanning .ws-stack-card--front {
+  box-shadow:
+    0 16px 52px rgba(0, 0, 0, 0.52),
+    0 5px 14px rgba(0, 0, 0, 0.32);
+}
+
+.ws-stack-card--open {
+  box-shadow:
+    0 22px 64px rgba(0, 0, 0, 0.56),
+    0 8px 20px rgba(0, 0, 0, 0.34);
+}
+
+.ws-stack-card:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.55);
+  outline-offset: 3px;
+}
+
+/* ─── Card face ────────────────────────────────────────────────────────────── */
+
+.ws-card-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 5.5% 6%;
+  font-family: var(--font-display, 'Space Grotesk', sans-serif);
+  user-select: none;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* Full-bleed brand artwork */
+.ws-card-artwork {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: inherit;
+}
+
+/* Dark overlay scrim for legibility */
+.ws-card-scrim {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: rgba(8, 8, 12, 0.38);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Variant-specific overlay tinting */
+.ws-card-face--grid   .ws-card-scrim { background: rgba(10, 12, 18, 0.36); }
+.ws-card-face--chrome .ws-card-scrim { background: rgba(6, 6, 10, 0.26); }
+.ws-card-face--carbon .ws-card-scrim { background: rgba(5, 5, 7, 0.42); }
+.ws-card-face--lumen  .ws-card-scrim { background: rgba(12, 10, 16, 0.30); }
+
+/* Specular glare follows pointer */
+.ws-card-glare {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    ellipse 50% 38% at var(--ws-glare-x, 50%) var(--ws-glare-y, 40%),
+    rgba(255, 255, 255, 0.22) 0%,
+    transparent 68%
+  );
+  pointer-events: none;
+  mix-blend-mode: screen;
+  z-index: 2;
+}
+
+/* Animated specular sheen sweep */
+.ws-card-sheen {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    115deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.10) 50%,
+    transparent 80%
+  );
+  background-size: 250% 250%;
+  background-position: 220% 220%;
+  animation: ws-sheen-sweep 7s cubic-bezier(0.22, 0.8, 0.24, 1) infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+
+@keyframes ws-sheen-sweep {
+  0%, 75% { background-position: 220% 220%; }
+  95%, 100% { background-position: -120% -120%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ws-card-sheen { animation: none; }
+}
+
+/* Perimeter chamfer rim */
+.ws-card-rim {
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.50);
+  z-index: 5;
+}
+
+/* All layout children sit above the overlays */
+.ws-card-header,
+.ws-card-chip-row,
+.ws-card-footer {
+  position: relative;
+  z-index: 3;
+}
+
+/* ─── Card layout zones ────────────────────────────────────────────────────── */
+
+.ws-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex: 0 0 auto;
+}
+
+.ws-card-issuer-block {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.ws-card-issuer {
+  font-size: clamp(0.45rem, 1.9cqi, 0.58rem);
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+.ws-card-product {
+  font-size: clamp(0.55rem, 2.6cqi, 0.72rem);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.ws-card-contactless {
+  opacity: 0.75;
+  flex-shrink: 0;
+  margin-top: -1px;
+}
+
+/* Middle: chip row */
+.ws-card-chip-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  padding-top: 8%;
+}
+
+.ws-card-chip {
+  width: clamp(28px, 12%, 38px);
+  height: clamp(18px, 7.5%, 26px);
+  border-radius: 5px;
+  position: relative;
+  flex-shrink: 0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45), 0 0 0 0.5px rgba(255, 255, 255, 0.12);
+}
+
+.ws-card-chip--grid   { background: linear-gradient(135deg, #7a7060 0%, #c8b870 45%, #a08840 100%); }
+.ws-card-chip--chrome { background: linear-gradient(135deg, #b0a8a0 0%, #e0d8c8 45%, #908878 100%); }
+.ws-card-chip--carbon { background: linear-gradient(135deg, #585850 0%, #989080 45%, #484840 100%); }
+.ws-card-chip--lumen  { background: linear-gradient(135deg, #c0b060 0%, #f0e098 45%, #a09040 100%); }
+
+/* Footer */
+.ws-card-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: auto;
+}
+
+.ws-card-number {
+  font-size: clamp(0.5rem, 2.4cqi, 0.68rem);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  font-variant-numeric: tabular-nums;
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6), 0 -1px 0 rgba(255, 255, 255, 0.07);
+}
+
+.ws-card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.ws-card-holder {
+  font-size: clamp(0.44rem, 1.9cqi, 0.58rem);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  opacity: 0.72;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.ws-card-expires {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+}
+
+.ws-card-meta-label {
+  font-size: clamp(0.36rem, 1.4cqi, 0.44rem);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.50;
+}
+
+.ws-card-meta-value {
+  font-size: clamp(0.44rem, 1.8cqi, 0.56rem);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─── Activity panel ───────────────────────────────────────────────────────── */
+
+.ws-activity-panel {
+  margin-top: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  padding: 1rem 1.125rem;
+  backdrop-filter: blur(10px);
+}
+
+.ws-activity-balance {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.875rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.ws-activity-label {
+  font-size: 0.70rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.40);
+  letter-spacing: 0.03em;
+}
+
+.ws-activity-amount {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.95);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.ws-activity-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.ws-activity-row {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.ws-activity-row:last-child { border-bottom: none; }
+
+.ws-activity-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.ws-activity-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.ws-activity-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex: 1;
+  min-width: 0;
+}
+
+.ws-activity-merchant {
+  font-size: 0.77rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.88);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ws-activity-detail {
+  font-size: 0.67rem;
+  color: rgba(255, 255, 255, 0.38);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ws-activity-tx-amount {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.70);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  letter-spacing: -0.01em;
+}
+
+.ws-activity-tx-amount--positive { color: #4ade80; }
+
+.ws-activity-empty {
+  font-size: 0.73rem;
+  color: rgba(255, 255, 255, 0.32);
+  text-align: center;
+  padding: 0.5rem 0;
+  margin: 0;
+}

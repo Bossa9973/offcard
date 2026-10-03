@@ -361,6 +361,19 @@ html, body {
 	border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
+.off-nav-scroll-progress {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	height: 2px;
+	background: var(--gradient-lumen);
+	box-shadow: 0 0 10px rgba(242, 242, 198, 0.45);
+	transition: width 0.08s linear;
+	z-index: 1001;
+	pointer-events: none;
+}
+
+
 .off-nav-container {
 	width: 100%;
 	max-width: 1216px;
@@ -510,14 +523,33 @@ html, body {
 	margin: 0 0 24px;
 }
 
+.off-hero-line-mask {
+	display: block;
+	overflow: hidden;
+	padding-bottom: 4px;
+}
+
 .off-hero-line--1 {
 	display: block;
-	animation: off-fade-up var(--dur-hero) var(--ease-out) 0ms backwards;
+	animation: off-kinetic-line 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.08s backwards;
+	will-change: transform, opacity;
 }
 
 .off-hero-line--2 {
 	display: block;
-	animation: off-fade-up var(--dur-hero) var(--ease-out) 80ms backwards;
+	animation: off-kinetic-line 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.22s backwards;
+	will-change: transform, opacity;
+}
+
+@keyframes off-kinetic-line {
+	from {
+		opacity: 0;
+		transform: translateY(105%);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
 }
 
 .off-hero-lead {
@@ -594,15 +626,114 @@ html, body {
 	z-index: 1;
 }
 
-/* Card Stack Container */
+/* Deck Toolbar & Interactive Controls (Scroll-Craft Tactile Controls) */
+.off-deck-toolbar {
+	position: absolute;
+	top: -24px;
+	left: 50%;
+	transform: translateX(-50%);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	width: clamp(340px, 34vw, 560px);
+	z-index: 20;
+}
+
+@media (max-width: 640px) {
+	.off-deck-toolbar {
+		top: -36px;
+		width: 100%;
+		max-width: 360px;
+	}
+}
+
+.off-currency-switch {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	background: rgba(18, 18, 22, 0.88);
+	backdrop-filter: blur(14px);
+	-webkit-backdrop-filter: blur(14px);
+	padding: 4px;
+	border-radius: var(--r-full);
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.7);
+}
+
+.off-curr-pill {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	background: transparent;
+	border: none;
+	color: rgba(255, 255, 255, 0.65);
+	font-family: var(--font-display);
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: 0.02em;
+	padding: 5px 10px;
+	border-radius: var(--r-full);
+	cursor: pointer;
+	transition: all 0.18s var(--ease-out);
+}
+
+.off-curr-pill:hover {
+	color: #ffffff;
+	background: rgba(255, 255, 255, 0.08);
+}
+
+.off-curr-pill--active {
+	color: #0a0a0a !important;
+	background: var(--gradient-lumen) !important;
+	box-shadow: 0 0 12px rgba(242, 242, 198, 0.35);
+}
+
+.off-fan-toggle {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	background: rgba(18, 18, 22, 0.88);
+	backdrop-filter: blur(14px);
+	-webkit-backdrop-filter: blur(14px);
+	border: 1px solid rgba(255, 255, 255, 0.14);
+	color: rgba(255, 255, 255, 0.8);
+	font-family: var(--font-display);
+	font-size: 11px;
+	font-weight: 600;
+	padding: 6px 14px;
+	border-radius: var(--r-full);
+	cursor: pointer;
+	transition: all 0.2s var(--ease-out);
+}
+
+.off-fan-toggle:hover {
+	color: #ffffff;
+	border-color: rgba(255, 255, 255, 0.25);
+	background: rgba(28, 28, 34, 0.95);
+}
+
+.off-fan-toggle--active {
+	color: #ffffff;
+	border-color: rgba(242, 242, 198, 0.5);
+	box-shadow: 0 0 16px rgba(242, 242, 198, 0.2);
+}
+
+.off-fan-toggle__icon {
+	font-size: 13px;
+	line-height: 1;
+}
+
+/* Card Stack Container (Scroll-Craft 3D Gyroscopic Physics) */
 .off-hero-card-stack {
 	position: relative;
 	width: clamp(340px, 34vw, 560px);
 	aspect-ratio: 1.586;
 	transform-style: preserve-3d;
-	transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
-	transition: transform 0.1s var(--ease-out);
-	animation: off-card-float 6s var(--ease-in-out) infinite alternate;
+	transform: translate3d(0, var(--float-y, 0px), 0)
+		rotateX(calc(var(--tilt-x, 0deg) + var(--scroll-pitch, 0deg) + var(--sc-hero-pitch, 0deg)))
+		rotateY(var(--tilt-y, 0deg));
+	transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
 	z-index: 2;
 }
 
@@ -613,40 +744,62 @@ html, body {
 	}
 }
 
-.off-hero-stage--hover .off-hero-card-stack {
-	animation-play-state: paused;
-}
-
-@keyframes off-card-float {
-	0% {
-		transform: translateY(0);
-	}
-	100% {
-		transform: translateY(-6px);
-	}
-}
-
 .off-stack-card {
 	position: absolute;
 	inset: 0;
 	width: 100%;
 	border-radius: var(--r-xl);
-	transition: transform 0.3s var(--ease-out);
+	transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
 }
 
 /* 1. Back Card: Dark, Moneta reference artwork, offset up-left (Pass 5, Section 1.5) */
 .off-stack-card--back {
-	transform: translate3d(-16%, -22%, -30px) rotateZ(-9deg) rotateY(-8deg) rotateX(4deg);
+	transform: translate3d(
+		calc(-16% - var(--sc-hero-spread, 0px) * 0.18),
+		calc(-22% - var(--sc-hero-spread, 0px) * 0.1),
+		calc(-30px - var(--sc-hero-spread, 0px) * 0.6)
+	) rotateZ(calc(-9deg - var(--sc-hero-rot-extra, 0deg))) rotateY(-8deg) rotateX(4deg);
 	z-index: 1;
+}
+
+.off-stack-card--back-fanned {
+	transform: translate3d(-28%, -28%, -20px) rotateZ(-13deg) rotateY(-11deg) rotateX(6deg) !important;
+	box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.95);
 }
 
 /* 2. Front Card: Light lumen gradient, full crypto content (Pass 5, Section 1.5) */
 .off-stack-card--front {
-	transform: translate3d(10%, 8%, 40px) rotateZ(-3deg) rotateY(-8deg) rotateX(4deg);
+	transform: translate3d(
+		calc(10% + var(--sc-hero-spread, 0px) * 0.14),
+		calc(8% + var(--sc-hero-spread, 0px) * 0.08),
+		calc(40px + var(--sc-hero-spread, 0px) * 0.7)
+	) rotateZ(calc(-3deg + var(--sc-hero-rot-extra, 0deg) * 0.5)) rotateY(-8deg) rotateX(4deg);
 	z-index: 2;
 	backface-visibility: hidden;
 	-webkit-font-smoothing: antialiased;
 }
+
+.off-stack-card--front-fanned {
+	transform: translate3d(20%, 15%, 55px) rotateZ(3deg) rotateY(-4deg) rotateX(2deg) !important;
+	box-shadow: 0 35px 80px -20px rgba(0, 0, 0, 0.9);
+}
+
+.off-stack-card--ripple {
+	animation: off-card-haptic 0.55s cubic-bezier(0.22, 0.8, 0.24, 1);
+}
+
+@keyframes off-card-haptic {
+	0% {
+		filter: brightness(1);
+	}
+	30% {
+		filter: brightness(1.22) drop-shadow(0 0 20px rgba(242, 242, 198, 0.4));
+	}
+	100% {
+		filter: brightness(1);
+	}
+}
+
 
 /* Floating Status Toast: Safe zone below-left of stack, cycles payments (Pass 5, Section 2.4 & 4.6) */
 .off-hero-toast {
@@ -1135,6 +1288,50 @@ html, body {
 	transition: width 0.6s var(--ease-out);
 }
 
+.off-spend-meter__presets {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-top: 6px;
+}
+
+.off-spend-meter__tag {
+	font-size: 11px;
+	color: var(--on-dark-faint);
+	letter-spacing: 0.02em;
+}
+
+.off-spend-presets-row {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.off-spend-pill {
+	background: rgba(255, 255, 255, 0.06);
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	color: rgba(255, 255, 255, 0.7);
+	font-family: var(--font-display);
+	font-size: 10px;
+	font-weight: 600;
+	padding: 2px 7px;
+	border-radius: var(--r-full);
+	cursor: pointer;
+	transition: all 0.15s ease;
+}
+
+.off-spend-pill:hover {
+	color: #ffffff;
+	background: rgba(255, 255, 255, 0.14);
+}
+
+.off-spend-pill--active {
+	background: rgba(242, 242, 198, 0.16) !important;
+	color: #f2f2c6 !important;
+	border-color: rgba(242, 242, 198, 0.4) !important;
+}
+
+
 /* ==========================================================================
    Bento Tile 2: Multi-Currency (Pass 5, Section 4.5 & User Request)
    ========================================================================== */
@@ -1161,7 +1358,32 @@ html, body {
 	justify-content: space-between;
 	align-items: center;
 	padding: 12px 16px;
-	transition: background 0.25s ease, transform 0.25s var(--ease-out);
+	cursor: pointer;
+	user-select: none;
+	transition: background 0.25s ease, transform 0.25s var(--ease-out), border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.off-currency-row:hover {
+	background: rgba(255, 255, 255, 0.05);
+	transform: translateX(2px);
+}
+
+.off-currency-row--selected {
+	border-color: rgba(242, 242, 198, 0.4) !important;
+	background: linear-gradient(180deg, rgba(28, 28, 34, 0.8) 0%, rgba(20, 20, 24, 0.95) 100%) !important;
+	box-shadow: 0 0 16px rgba(242, 242, 198, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+}
+
+.off-curr-active-badge {
+	font-size: 9px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	padding: 1px 5px;
+	border-radius: 4px;
+	background: rgba(242, 242, 198, 0.2);
+	color: #f2f2c6;
+	border: 1px solid rgba(242, 242, 198, 0.35);
 }
 
 .off-currency-row--ticking {
@@ -1287,10 +1509,60 @@ html, body {
 	display: flex;
 	flex-direction: column;
 	gap: 8px;
-	margin-top: 20px;
+	margin-top: 16px;
 	position: relative;
 	z-index: 2;
 }
+
+.off-settlement-header-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	margin-bottom: 6px;
+}
+
+.off-settlement-tagline {
+	font-size: 11px;
+	font-weight: 500;
+	color: rgba(10, 10, 10, 0.65);
+	letter-spacing: 0.02em;
+}
+
+.off-settlement-replay-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	background: rgba(0, 0, 0, 0.15);
+	border: 1px solid rgba(0, 0, 0, 0.18);
+	color: var(--on-primary);
+	font-family: var(--font-display);
+	font-size: 11px;
+	font-weight: 600;
+	padding: 4px 10px;
+	border-radius: var(--r-full);
+	cursor: pointer;
+	transition: all 0.18s ease;
+}
+
+.off-settlement-replay-btn:hover:not(:disabled) {
+	background: rgba(0, 0, 0, 0.28);
+	transform: scale(1.02);
+}
+
+.off-settlement-replay-btn--active {
+	border-color: rgba(0, 168, 126, 0.6);
+	color: var(--success);
+}
+
+.off-replay-dot {
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: #10b981;
+	box-shadow: 0 0 6px rgba(16, 185, 129, 0.85);
+}
+
 
 .off-settlement-step {
 	display: flex;
@@ -1472,6 +1744,25 @@ html, body {
 		background-position: -120% -120%;
 	}
 }
+
+/* Dynamic Specular Glare (Scroll-Craft Pointer Engine) */
+.off-bankcard__glare {
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	pointer-events: none;
+	background: radial-gradient(
+		360px circle at var(--glare-x, 50%) var(--glare-y, 50%),
+		rgba(255, 255, 255, 0.32) 0%,
+		rgba(255, 255, 255, 0.08) 35%,
+		transparent 70%
+	);
+	opacity: var(--glare-opacity, 0);
+	transition: opacity 0.22s ease;
+	mix-blend-mode: overlay;
+	z-index: 4;
+}
+
 
 /* Pinstripe drift shimmer along 20deg angle (Pass 5, Section 4.3) */
 .off-pinstripe__drift {
@@ -2171,3 +2462,966 @@ html, body {
 	color: var(--on-dark-faint);
 	margin: 0;
 }
+
+/* ==========================================================================
+   Scroll-Craft Engine: Kinetic Reveals, Timeline Progress & Parallax
+   - Strictly transform & opacity for smooth 60fps hardware acceleration
+   - Apple-style fluid cubic-bezier(0.16, 1, 0.3, 1) spring easing
+   - Organic staggered cascades for bento tiles, pricing cards, and FAQ items
+   - Complete prefers-reduced-motion safety
+   ========================================================================== */
+
+/* Bento Header reveal */
+.js .off-bento-header {
+	opacity: 0;
+	transform: translateY(28px);
+	transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+	will-change: opacity, transform;
+}
+.js .off-bento-header.is-revealed {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+/* Bento Grid Tiles: Kinetic Stagger */
+.js .off-bento-grid-12 > .off-tile {
+	opacity: 0;
+	transform: translateY(32px) scale(0.985);
+	transition:
+		opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+		transform 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+		box-shadow 0.25s var(--ease-out);
+	will-change: opacity, transform;
+}
+
+.js .off-bento-cards {
+	transition-delay: 0.04s;
+}
+.js .off-bento-currency {
+	transition-delay: 0.16s;
+}
+.js .off-bento-accounting {
+	transition-delay: 0.28s;
+}
+.js .off-bento-settlement,
+.js .off-bento-treasury {
+	transition-delay: 0.40s;
+}
+
+.js .off-bento-grid-12 > .off-tile.is-revealed {
+	opacity: 1;
+	transform: translateY(0) scale(1);
+}
+
+@media (hover: hover) {
+	.js .off-bento-grid-12 > .off-tile.is-revealed:hover {
+		transform: translateY(-3px) scale(1);
+	}
+}
+
+/* Tile 1 Internal: card visual floating settle */
+.js .off-bento-cards .cards-tile__visual {
+	transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.15s, opacity 0.8s ease 0.15s;
+	will-change: transform, opacity;
+}
+.js .off-bento-cards:not(.is-revealed) .cards-tile__visual {
+	transform: translate3d(24px, 20px, 0) rotate(1.5deg);
+	opacity: 0.5;
+}
+.js .off-bento-cards.is-revealed .cards-tile__visual {
+	transform: translate3d(0, 0, 0) rotate(0deg);
+	opacity: 1;
+}
+
+/* Tile 1 Internal: Chips row slide-in */
+.js .off-bento-cards .cards-tile__chips .off-chip-raised {
+	opacity: 0;
+	transform: translateY(12px);
+	transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.js .off-bento-cards.is-revealed .cards-tile__chips .off-chip-raised:nth-child(1) {
+	opacity: 1;
+	transform: translateY(0);
+	transition-delay: 0.25s;
+}
+.js .off-bento-cards.is-revealed .cards-tile__chips .off-chip-raised:nth-child(2) {
+	opacity: 1;
+	transform: translateY(0);
+	transition-delay: 0.35s;
+}
+.js .off-bento-cards.is-revealed .cards-tile__chips .off-chip-raised:nth-child(3) {
+	opacity: 1;
+	transform: translateY(0);
+	transition-delay: 0.45s;
+}
+
+/* Tile 2 Internal: Ticker box subtle entrance */
+.js .off-bento-currency .off-currency-box {
+	transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s, opacity 0.8s ease 0.1s;
+}
+.js .off-bento-currency:not(.is-revealed) .off-currency-box {
+	opacity: 0.6;
+	transform: translateY(14px);
+}
+.js .off-bento-currency.is-revealed .off-currency-box {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+/* Tile 3 Internal: Ledger item rows sequential slide-up */
+.js .off-bento-accounting .off-ledger-item {
+	opacity: 0;
+	transform: translateY(18px);
+	transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.js .off-bento-accounting.is-revealed .off-ledger-item:nth-child(1) {
+	opacity: 1;
+	transform: translateY(0);
+	transition-delay: 0.22s;
+}
+.js .off-bento-accounting.is-revealed .off-ledger-item:nth-child(2) {
+	opacity: 1;
+	transform: translateY(0);
+	transition-delay: 0.34s;
+}
+.js .off-bento-accounting.is-revealed .off-ledger-item:nth-child(3) {
+	opacity: 1;
+	transform: translateY(0);
+	transition-delay: 0.46s;
+}
+
+/* Tile 4 Internal: Settlement sparkline line drawing animation */
+.js .off-bento-settlement .off-sparkline path {
+	stroke-dasharray: 450;
+	stroke-dashoffset: 450;
+	transition: stroke-dashoffset 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.3s;
+}
+.js .off-bento-settlement.is-revealed .off-sparkline path {
+	stroke-dashoffset: 0;
+}
+
+/* Pricing Section header reveal */
+.js .off-pricing-band .off-section-header {
+	opacity: 0;
+	transform: translateY(28px);
+	transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+	will-change: opacity, transform;
+}
+.js .off-pricing-band .off-section-header.is-revealed {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+/* Pricing Cards: Staggered Elevation Rise */
+.js .off-plan-card {
+	opacity: 0;
+	transform: translateY(38px);
+	transition:
+		opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--i, 0) * 0.12s),
+		transform 0.75s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--i, 0) * 0.12s),
+		box-shadow 0.25s var(--ease-out);
+	will-change: opacity, transform;
+}
+.js .off-plan-card.is-revealed {
+	opacity: 1;
+	transform: translateY(0);
+}
+.js .off-plan-card--featured.is-revealed {
+	opacity: 1;
+	transform: translateY(-8px);
+}
+@media (hover: hover) {
+	.js .off-plan-card.is-revealed:hover {
+		transform: translateY(-4px);
+	}
+	.js .off-plan-card--featured.is-revealed:hover {
+		transform: translateY(-12px);
+	}
+}
+
+/* FAQ Section: Lateral converging entrance */
+.js .off-faq-sidebar {
+	opacity: 0;
+	transform: translateX(-24px);
+	transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+	will-change: opacity, transform;
+}
+.js .off-faq-sidebar.is-revealed {
+	opacity: 1;
+	transform: translateX(0);
+}
+
+.js .off-faq-accordion {
+	opacity: 0;
+	transform: translateX(24px);
+	transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.1s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
+	will-change: opacity, transform;
+}
+.js .off-faq-accordion.is-revealed {
+	opacity: 1;
+	transform: translateX(0);
+}
+
+/* Closing CTA Card: Radiant Aperture reveal */
+.js .off-cta-card {
+	opacity: 0;
+	transform: scale(0.97) translateY(24px);
+	transition:
+		opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+		transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+	will-change: opacity, transform;
+}
+.js .off-cta-card.is-revealed {
+	opacity: 1;
+	transform: scale(1) translateY(0);
+}
+
+/* Subtle continuous scroll parallax for desktop */
+@media (min-width: 1025px) {
+	.off-bento-band {
+		--bento-drift: calc((var(--sc-p, 0.5) - 0.5) * -16px);
+	}
+	.off-bento-cards {
+		transform: translateY(var(--bento-drift, 0px));
+	}
+}
+
+/* Tile 4 Settlement Timeline Conduit & Kinetic Pulses */
+.off-settlement-steps-wrap {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	margin-top: 16px;
+}
+
+.off-settlement-conduit {
+	position: absolute;
+	top: 24px;
+	bottom: 24px;
+	left: 28px;
+	width: 2px;
+	background: rgba(0, 0, 0, 0.08);
+	z-index: 1;
+	pointer-events: none;
+	border-radius: 1px;
+}
+
+.off-settlement-conduit::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: var(--conduit-fill, 0%);
+	background: linear-gradient(180deg, #00a87e 0%, #494fdf 100%);
+	box-shadow: 0 0 10px rgba(73, 79, 223, 0.5);
+	transition: height 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+	border-radius: 1px;
+}
+
+.off-settlement-step {
+	position: relative;
+	z-index: 2;
+	transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.off-settlement-step--active .off-step-dot--filled {
+	background: #00a87e !important;
+	box-shadow: 0 0 12px rgba(0, 168, 126, 0.7);
+	transform: scale(1.15);
+}
+
+.off-settlement-step--current {
+	border-color: rgba(0, 168, 126, 0.35);
+	box-shadow: 0 4px 18px -2px rgba(0, 0, 0, 0.08), inset 0 0 0 1px rgba(0, 168, 126, 0.15);
+}
+
+/* Grand Horizon Mode Seam: The Engineered Peak Boundary */
+.off-horizon-seam {
+	position: relative;
+	width: 100%;
+	height: 2px;
+	background: #000000;
+	z-index: 5;
+	overflow: visible;
+}
+
+.off-horizon-line {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 1px;
+	background: linear-gradient(
+		90deg,
+		transparent 0%,
+		rgba(255, 255, 255, 0.12) 15%,
+		rgba(242, 242, 198, 0.55) 50%,
+		rgba(73, 79, 223, 0.45) 85%,
+		transparent 100%
+	);
+	box-shadow: 0 0 18px rgba(242, 242, 198, 0.3);
+}
+
+/* Pricing Interactive Billing Switcher */
+.off-billing-toggle-wrap {
+	display: flex;
+	justify-content: flex-start;
+	margin-top: 24px;
+}
+
+.off-billing-toggle {
+	display: inline-flex;
+	align-items: center;
+	background: rgba(0, 0, 0, 0.05);
+	padding: 4px;
+	border-radius: var(--r-full);
+	border: 1px solid rgba(0, 0, 0, 0.08);
+	gap: 4px;
+}
+
+.off-billing-btn {
+	border: 0;
+	background: transparent;
+	font-family: var(--font-display);
+	font-size: 13px;
+	font-weight: 500;
+	color: var(--mute);
+	padding: 6px 16px;
+	border-radius: var(--r-full);
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	transition: all 0.2s var(--ease-out);
+}
+
+.off-billing-btn:hover {
+	color: var(--ink);
+}
+
+.off-billing-btn--active {
+	background: #ffffff;
+	color: var(--ink);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.04);
+	font-weight: 600;
+}
+
+.off-billing-discount {
+	background: rgba(0, 168, 126, 0.12);
+	color: #007a5b;
+	font-size: 11px;
+	font-weight: 700;
+	padding: 2px 7px;
+	border-radius: var(--r-full);
+	letter-spacing: 0.02em;
+}
+
+/* Featured Plan Specular Top Edge Light Pass */
+.off-plan-card--featured {
+	position: relative;
+	overflow: hidden;
+}
+
+.off-plan-card--featured::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: -60%;
+	width: 60%;
+	height: 2px;
+	background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.95), transparent);
+	animation: off-plan-rim-beam 6s infinite ease-in-out;
+	pointer-events: none;
+	z-index: 5;
+}
+
+@keyframes off-plan-rim-beam {
+	0%, 35% {
+		left: -60%;
+		opacity: 0;
+	}
+	50% {
+		opacity: 1;
+	}
+	65%, 100% {
+		left: 140%;
+		opacity: 0;
+	}
+}
+
+/* Desktop Magnetic Button Physics */
+[data-sc-magnet] {
+	transition: transform 0.08s ease-out;
+	will-change: transform;
+}
+
+/* prefers-reduced-motion accessibility guarantee */
+@media (prefers-reduced-motion: reduce) {
+	.js .off-bento-header,
+	.js .off-bento-grid-12 > .off-tile,
+	.js .off-bento-cards .cards-tile__visual,
+	.js .off-bento-cards .cards-tile__chips .off-chip-raised,
+	.js .off-bento-currency .off-currency-box,
+	.js .off-bento-accounting .off-ledger-item,
+	.js .off-pricing-band .off-section-header,
+	.js .off-plan-card,
+	.js .off-faq-sidebar,
+	.js .off-faq-accordion,
+	.js .off-cta-card,
+	.off-settlement-step {
+		opacity: 1 !important;
+		transform: none !important;
+		transition: none !important;
+	}
+	.js .off-plan-card--featured {
+		transform: translateY(-8px) !important;
+	}
+	.js .off-bento-settlement .off-sparkline path {
+		stroke-dashoffset: 0 !important;
+		transition: none !important;
+	}
+	.off-settlement-conduit::after {
+		height: 100% !important;
+		transition: none !important;
+	}
+	.off-plan-card--featured::after {
+		display: none !important;
+	}
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Card 3D Inspector – Physical material 3D card viewer
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.card3d-root {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+}
+
+.card3d-stage {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+}
+
+.card3d-floor-reflection {
+	position: absolute;
+	bottom: -28px;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 85%;
+	height: 56px;
+	background: radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.06) 0%, transparent 75%);
+	pointer-events: none;
+	filter: blur(6px);
+	z-index: 0;
+}
+
+.card3d-scene {
+	position: relative;
+	width: 100%;
+	max-width: 420px;
+	aspect-ratio: 85.6 / 53.98;
+	border-radius: 18px;
+	transform-style: preserve-3d;
+	cursor: pointer;
+	will-change: transform;
+	z-index: 1;
+	box-shadow:
+		0 24px 64px -8px rgba(0,0,0,0.62),
+		0 8px 24px -4px rgba(0,0,0,0.42),
+		0 1px 4px rgba(0,0,0,0.30);
+}
+
+.card3d-scene:focus-visible {
+	outline: 2px solid rgba(255,255,255,0.5);
+	outline-offset: 4px;
+}
+
+.card3d-face {
+	position: absolute;
+	inset: 0;
+	border-radius: 18px;
+	overflow: hidden;
+	backface-visibility: hidden;
+	-webkit-backface-visibility: hidden;
+	display: flex;
+	flex-direction: column;
+	font-family: var(--font-display, 'Space Grotesk', sans-serif);
+	color: rgba(255,255,255,0.92);
+	user-select: none;
+}
+
+.card3d-face--back {
+	transform: rotateY(180deg);
+}
+
+.card3d-artwork {
+	position: absolute;
+	inset: 0;
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+.card3d-artwork--back {
+	transform: scaleX(-1);
+}
+
+.card3d-overlay {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	z-index: 1;
+}
+
+.card3d-glare {
+	position: absolute;
+	inset: 0;
+	background: radial-gradient(
+		ellipse 50% 40% at var(--card3d-glare-x, 50%) var(--card3d-glare-y, 40%),
+		rgba(255,255,255,0.28) 0%,
+		rgba(255,255,255,0.08) 35%,
+		transparent 68%
+	);
+	pointer-events: none;
+	mix-blend-mode: screen;
+	transition: opacity 0.2s ease;
+	z-index: 2;
+}
+
+.card3d-sheen {
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(115deg, transparent 20%, rgba(255,255,255,0.10) 50%, transparent 80%);
+	background-size: 250% 250%;
+	background-position: 220% 220%;
+	animation: card3d-sheen-sweep 7s cubic-bezier(0.22, 0.8, 0.24, 1) infinite;
+	pointer-events: none;
+	z-index: 2;
+}
+
+@keyframes card3d-sheen-sweep {
+	0%, 75% { background-position: 220% 220%; }
+	95%, 100% { background-position: -120% -120%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.card3d-sheen { animation: none; }
+}
+
+.card3d-rim {
+	position: absolute;
+	inset: 0;
+	border-radius: 18px;
+	pointer-events: none;
+	box-shadow:
+		inset 0 0 0 1px rgba(255,255,255,0.14),
+		inset 0 1px 0 rgba(255,255,255,0.32),
+		inset 0 -1px 0 rgba(0,0,0,0.52);
+	z-index: 5;
+}
+
+.card3d-header,
+.card3d-chip-row,
+.card3d-footer,
+.card3d-magstripe,
+.card3d-signature-row,
+.card3d-antenna-row {
+	position: relative;
+	z-index: 3;
+}
+
+.card3d-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	padding: 6% 6.5% 0;
+}
+
+.card3d-edition {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.card3d-issuer {
+	font-size: clamp(0.55rem, 1.8cqi, 0.72rem);
+	font-weight: 500;
+	letter-spacing: 0.09em;
+	text-transform: uppercase;
+	opacity: 0.52;
+}
+
+.card3d-product {
+	font-size: clamp(0.8rem, 2.5cqi, 1.05rem);
+	font-weight: 600;
+	letter-spacing: 0.02em;
+}
+
+.card3d-contactless {
+	flex-shrink: 0;
+	color: rgba(255,255,255,0.80);
+	margin-top: 2px;
+}
+
+.card3d-chip-row {
+	display: flex;
+	align-items: center;
+	padding: 4% 6.5%;
+	flex: 1;
+}
+
+.card3d-chip {
+	width: clamp(36px, 9%, 52px);
+	height: clamp(24px, 5.5%, 36px);
+	border-radius: 6px;
+	position: relative;
+	box-shadow: 0 2px 6px rgba(0,0,0,0.50), 0 0 0 0.5px rgba(255,255,255,0.14);
+}
+
+.card3d-face--grid   .card3d-chip { background: linear-gradient(135deg, #7a7060 0%, #c8b870 45%, #a08840 100%); }
+.card3d-face--chrome .card3d-chip { background: linear-gradient(135deg, #b0a8a0 0%, #e0d8c8 45%, #908878 100%); }
+.card3d-face--carbon .card3d-chip { background: linear-gradient(135deg, #585850 0%, #989080 45%, #484840 100%); }
+.card3d-face--lumen  .card3d-chip { background: linear-gradient(135deg, #c0b060 0%, #f0e098 45%, #a09040 100%); }
+
+.card3d-footer {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+	padding: 0 6.5% 6%;
+	margin-top: auto;
+}
+
+.card3d-pan {
+	font-size: clamp(0.7rem, 2.1cqi, 0.92rem);
+	font-weight: 600;
+	letter-spacing: 0.20em;
+	font-variant-numeric: tabular-nums;
+	font-family: var(--font-mono, 'JetBrains Mono', monospace);
+	text-shadow: 0 1px 3px rgba(0,0,0,0.65), 0 -1px 0 rgba(255,255,255,0.08);
+}
+
+.card3d-footer-meta {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-end;
+}
+
+.card3d-holder {
+	font-size: clamp(0.55rem, 1.6cqi, 0.72rem);
+	font-weight: 500;
+	letter-spacing: 0.09em;
+	opacity: 0.72;
+	text-shadow: 0 1px 2px rgba(0,0,0,0.55);
+}
+
+.card3d-expiry {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 1px;
+}
+
+.card3d-expiry-label {
+	font-size: clamp(0.38rem, 1.2cqi, 0.5rem);
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	opacity: 0.48;
+}
+
+.card3d-expiry-value {
+	font-size: clamp(0.55rem, 1.7cqi, 0.70rem);
+	font-weight: 600;
+	letter-spacing: 0.06em;
+	font-variant-numeric: tabular-nums;
+}
+
+/* Card back */
+.card3d-magstripe { margin-top: 12%; padding: 0; }
+
+.card3d-magstripe-band {
+	width: 100%;
+	height: clamp(30px, 8%, 42px);
+	background: linear-gradient(180deg, #1a1612 0%, #0e0c0a 35%, #1a1612 100%);
+	box-shadow: 0 2px 0 rgba(255,255,255,0.03), 0 -2px 0 rgba(255,255,255,0.03);
+}
+
+.card3d-signature-row {
+	display: flex;
+	align-items: stretch;
+	gap: 0;
+	margin: 4% 6.5% 0;
+}
+
+.card3d-signature-panel {
+	flex: 1;
+	background: rgba(255,255,255,0.92);
+	border-radius: 4px 0 0 4px;
+	padding: 6px 10px;
+	position: relative;
+	overflow: hidden;
+	min-height: 32px;
+	display: flex;
+	align-items: flex-end;
+}
+
+.card3d-signature-lines {
+	position: absolute;
+	inset: 0;
+	background-image: repeating-linear-gradient(
+		-45deg, transparent 0, transparent 4px,
+		rgba(180,160,140,0.25) 4px, rgba(180,160,140,0.25) 5px
+	);
+	pointer-events: none;
+}
+
+.card3d-holder-etch {
+	font-size: 0.5rem;
+	font-weight: 700;
+	letter-spacing: 0.06em;
+	color: rgba(20,18,16,0.65);
+	font-family: var(--font-mono, monospace);
+	position: relative;
+	z-index: 1;
+}
+
+.card3d-cvc-block {
+	background: rgba(255,255,255,0.92);
+	border-left: 1px solid rgba(0,0,0,0.08);
+	border-radius: 0 4px 4px 0;
+	padding: 6px 10px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 2px;
+	min-width: 44px;
+}
+
+.card3d-cvc-label {
+	font-size: 0.36rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: rgba(20,18,16,0.45);
+	font-family: var(--font-mono, monospace);
+}
+
+.card3d-cvc-value {
+	font-size: 0.6rem;
+	font-weight: 700;
+	letter-spacing: 0.1em;
+	color: rgba(20,18,16,0.75);
+	font-family: var(--font-mono, monospace);
+}
+
+.card3d-antenna-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-end;
+	padding: 0 6.5% 6%;
+	margin-top: auto;
+}
+
+.card3d-flip-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.45rem;
+	margin-top: 1.25rem;
+	padding: 0.4rem 0.9rem;
+	border-radius: 8px;
+	border: 1px solid rgba(255,255,255,0.10);
+	background: rgba(255,255,255,0.04);
+	color: rgba(255,255,255,0.52);
+	font-size: 0.72rem;
+	font-weight: 500;
+	letter-spacing: 0.02em;
+	cursor: pointer;
+	transition: background 0.18s, color 0.18s, border-color 0.18s;
+	font-family: var(--font-display, sans-serif);
+}
+
+.card3d-flip-btn:hover {
+	background: rgba(255,255,255,0.08);
+	color: rgba(255,255,255,0.85);
+	border-color: rgba(255,255,255,0.18);
+}
+
+.card3d-flip-btn:focus-visible {
+	outline: 2px solid rgba(255,255,255,0.45);
+	outline-offset: 2px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Card Architecture Studio – section layout
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.card-studio-band {
+	padding-block: clamp(5rem, 9vw, 8rem);
+}
+
+.card-studio-headline {
+	text-align: center;
+	margin-bottom: clamp(2rem, 4vw, 3rem);
+}
+
+.card-studio-sub {
+	max-width: 44ch;
+	margin-inline: auto;
+	margin-top: 0.75rem;
+}
+
+.card-studio-tabs {
+	display: flex;
+	justify-content: center;
+	gap: 0.5rem;
+	margin-bottom: clamp(2.5rem, 4.5vw, 4rem);
+	flex-wrap: wrap;
+}
+
+.card-studio-tab {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 2px;
+	padding: 0.6rem 1.1rem;
+	border-radius: 10px;
+	border: 1px solid rgba(255,255,255,0.08);
+	background: rgba(255,255,255,0.03);
+	color: rgba(255,255,255,0.52);
+	font-family: var(--font-display, sans-serif);
+	cursor: pointer;
+	transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.15s;
+	min-width: 110px;
+}
+
+.card-studio-tab:hover {
+	background: rgba(255,255,255,0.06);
+	color: rgba(255,255,255,0.80);
+	border-color: rgba(255,255,255,0.14);
+}
+
+.card-studio-tab--active {
+	border-color: rgba(255,255,255,0.22);
+	background: rgba(255,255,255,0.08);
+	color: rgba(255,255,255,0.95);
+	transform: translateY(-1px);
+}
+
+.card-studio-tab--grid.card-studio-tab--active    { border-left: 3px solid #8c8a6a; }
+.card-studio-tab--chrome.card-studio-tab--active  { border-left: 3px solid #c0b8b0; }
+.card-studio-tab--carbon.card-studio-tab--active  { border-left: 3px solid #686860; }
+.card-studio-tab--lumen.card-studio-tab--active   { border-left: 3px solid #c8b858; }
+
+.card-studio-tab-name {
+	font-size: 0.82rem;
+	font-weight: 600;
+	letter-spacing: 0.01em;
+}
+
+.card-studio-tab-material {
+	font-size: 0.65rem;
+	opacity: 0.50;
+	font-weight: 400;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-width: 120px;
+}
+
+.card-studio-duo {
+	display: grid;
+	grid-template-columns: 1.1fr 1fr;
+	gap: clamp(2.5rem, 5vw, 5.5rem);
+	align-items: start;
+}
+
+@media (max-width: 900px) {
+	.card-studio-duo { grid-template-columns: 1fr; }
+	.card-studio-inspector-col { order: 1; }
+	.card-studio-stack-col { order: 2; display: flex; flex-direction: column; align-items: center; }
+}
+
+.card-studio-inspector-col {
+	display: flex;
+	flex-direction: column;
+	gap: 1.75rem;
+}
+
+.card-studio-inspector { width: 100%; }
+
+.card-studio-specs {
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+	border: 1px solid rgba(255,255,255,0.07);
+	border-radius: 12px;
+	overflow: hidden;
+}
+
+.card-studio-spec-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	gap: 1rem;
+	padding: 0.65rem 1.1rem;
+	border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.card-studio-spec-row:last-child { border-bottom: none; }
+
+.card-studio-spec-label {
+	font-size: 0.68rem;
+	font-weight: 500;
+	color: rgba(255,255,255,0.38);
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	flex-shrink: 0;
+}
+
+.card-studio-spec-value {
+	font-size: 0.74rem;
+	font-weight: 500;
+	color: rgba(255,255,255,0.80);
+	text-align: right;
+	letter-spacing: -0.01em;
+}
+
+.card-studio-cta {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.35rem;
+	font-size: 0.875rem;
+	font-weight: 600;
+	color: rgba(255,255,255,0.80);
+	text-decoration: none;
+	letter-spacing: 0.01em;
+	transition: color 0.2s, gap 0.2s;
+	font-family: var(--font-display, sans-serif);
+}
+
+.card-studio-cta:hover { color: #fff; gap: 0.55rem; }
+
+.card-studio-stack-col {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+	padding-top: 0.5rem;
+}
+
+.card-studio-stack-label {
+	font-size: 0.68rem;
+	font-weight: 500;
+	color: rgba(255,255,255,0.36);
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+	margin: 0;
+}
+
+.card-studio-wallet { width: 100%; }

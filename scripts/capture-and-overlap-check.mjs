@@ -3,7 +3,8 @@ import { writeFileSync, mkdirSync } from "node:fs";
 import { resolve } from "node:path";
 
 const CHROME_PATH = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
-const PORT = 9222;
+const PORT = 9333;
+const USER_DATA_DIR = "C:\\Users\\User\\.gemini\\antigravity-ide\\brain\\ea1674e8-8790-4611-94c3-06feefb1edec\\scratch\\chrome-test-profile";
 const WIDTHS = [1920, 1440, 1024, 768, 390];
 
 async function sleep(ms) {
@@ -12,13 +13,15 @@ async function sleep(ms) {
 
 async function run() {
 	mkdirSync("output", { recursive: true });
+	mkdirSync(USER_DATA_DIR, { recursive: true });
 
-	console.log("Launching Headless Chrome...");
+	console.log("Launching Headless Chrome on port 9333...");
 	const chrome = spawn(
 		CHROME_PATH,
 		[
 			"--headless=new",
 			`--remote-debugging-port=${PORT}`,
+			`--user-data-dir=${USER_DATA_DIR}`,
 			"--disable-gpu",
 			"--no-first-run",
 			"--no-default-browser-check",
@@ -29,7 +32,7 @@ async function run() {
 		{ stdio: "ignore" }
 	);
 
-	await sleep(2000);
+	await sleep(2500);
 
 	let wsUrl;
 	for (let i = 0; i < 10; i++) {
@@ -156,6 +159,35 @@ async function run() {
 			console.log(`PASS: Zero collisions at ${width}px.`);
 		}
 	}
+
+	console.log("\nCapturing scrolled sections at 1440px...");
+	await send("Emulation.setDeviceMetricsOverride", {
+		width: 1440,
+		height: 900,
+		deviceScaleFactor: 1,
+		mobile: false,
+	});
+
+	// Scroll to Bento
+	await send("Runtime.evaluate", { expression: "window.scrollTo(0, 750)" });
+	await sleep(800);
+	const bentoShot = await send("Page.captureScreenshot", { format: "png" });
+	writeFileSync("output/scrolled_bento_1440.png", Buffer.from(bentoShot.data, "base64"));
+	console.log("Saved output/scrolled_bento_1440.png");
+
+	// Scroll to Pricing
+	await send("Runtime.evaluate", { expression: "window.scrollTo(0, 1700)" });
+	await sleep(800);
+	const pricingShot = await send("Page.captureScreenshot", { format: "png" });
+	writeFileSync("output/scrolled_pricing_1440.png", Buffer.from(pricingShot.data, "base64"));
+	console.log("Saved output/scrolled_pricing_1440.png");
+
+	// Scroll to FAQ & CTA
+	await send("Runtime.evaluate", { expression: "window.scrollTo(0, 2600)" });
+	await sleep(800);
+	const faqShot = await send("Page.captureScreenshot", { format: "png" });
+	writeFileSync("output/scrolled_faq_1440.png", Buffer.from(faqShot.data, "base64"));
+	console.log("Saved output/scrolled_faq_1440.png");
 
 	ws.close();
 	chrome.kill();

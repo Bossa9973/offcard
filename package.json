@@ -19,6 +19,8 @@
     "@whop/elements-react": "1.0.0",
     "@whop/template-kit": "0.2.0",
     "frosted-ui": "0.0.1-canary.157",
+    "lucide-react": "^1.50.0",
+    "motion": "^14.0.0",
     "pdf-lib": "^1.17.1",
     "react": "19.2.4",
     "react-dom": "19.2.4"

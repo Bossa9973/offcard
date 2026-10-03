@@ -104,6 +104,7 @@ export function BankCard({
 				style={sheenDelay ? { animationDelay: sheenDelay } : undefined}
 				aria-hidden="true"
 			/>
+			<div className="off-bankcard__glare" aria-hidden="true" />
 			{dark && <div className="off-bankcard__gloss" aria-hidden="true" />}
 
 			{/* Top Row */}

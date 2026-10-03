@@ -13,10 +13,10 @@ export interface CountUpProps {
 const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
 
 /**
- * CountUp: Tabular numerical count-up on view entrance (Pass 5, Section 4.5)
+ * CountUp: Tabular numerical count-up on view entrance & value morph (Scroll-Craft Enhanced)
  * - 900ms cubic ease-out
  * - Tabular figures so layout does not jitter
- * - Triggers once when scrolled into view
+ * - Re-animates smoothly when `to` prop changes (e.g. billing toggle)
  * - Instant static value under prefers-reduced-motion
  */
 export function CountUp({
@@ -30,7 +30,8 @@ export function CountUp({
 }: CountUpProps) {
 	const [val, setVal] = useState(from);
 	const ref = useRef<HTMLSpanElement>(null);
-	const hasRun = useRef(false);
+	const inViewRef = useRef(false);
+	const currentValRef = useRef(from);
 
 	useEffect(() => {
 		const el = ref.current;
@@ -38,29 +39,41 @@ export function CountUp({
 
 		if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
 			setVal(to);
+			currentValRef.current = to;
+			return;
+		}
+
+		const animateTo = (target: number, startVal: number) => {
+			const startTime = performance.now();
+			const step = (now: number) => {
+				const elapsed = now - startTime;
+				const progress = Math.min(1, elapsed / duration);
+				const current = startVal + (target - startVal) * easeOut(progress);
+				setVal(current);
+				currentValRef.current = current;
+
+				if (progress < 1) {
+					requestAnimationFrame(step);
+				} else {
+					setVal(target);
+					currentValRef.current = target;
+				}
+			};
+			requestAnimationFrame(step);
+		};
+
+		if (inViewRef.current) {
+			// Already in view: smoothly animate from current value to new target
+			animateTo(to, currentValRef.current);
 			return;
 		}
 
 		const observer = new IntersectionObserver(
 			([entry]) => {
-				if (entry.isIntersecting && !hasRun.current) {
-					hasRun.current = true;
+				if (entry.isIntersecting && !inViewRef.current) {
+					inViewRef.current = true;
 					observer.disconnect();
-
-					const startTime = performance.now();
-					const step = (now: number) => {
-						const elapsed = now - startTime;
-						const progress = Math.min(1, elapsed / duration);
-						const current = from + (to - from) * easeOut(progress);
-						setVal(current);
-
-						if (progress < 1) {
-							requestAnimationFrame(step);
-						} else {
-							setVal(to);
-						}
-					};
-					requestAnimationFrame(step);
+					animateTo(to, from);
 				}
 			},
 			{ threshold: 0.1 }
@@ -70,7 +83,7 @@ export function CountUp({
 		return () => observer.disconnect();
 	}, [to, from, duration]);
 
-	const formatted = val.toLocaleString(undefined, {
+	const formatted = Math.round(val).toLocaleString(undefined, {
 		minimumFractionDigits: decimals,
 		maximumFractionDigits: decimals,
 	});
