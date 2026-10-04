@@ -116,20 +116,20 @@
 ### Scene 7: EDITIONS (56.2s – 70.7s)
 * **7a: Lumen (56.2s – 58.7s / 2500ms)**
   * **Shot ID:** `fcf2a10d-069d-4c0d-87c2-4b3e879603f4`
-  * **Visual:** Split layout: Lumen card (`x: -1.45, y: 0.70, scale: 0.26`); Label "Lumen" (`x: -2.40, y: 0.70, size: 0.068`). Hard cut on tick with zero camera wobble.
-  * **Audio:** Soft tick `ui-tick-1` at 56120ms (leads cut by 80ms).
+  * **Visual:** Split layout: Iridescent pearlescent Lumen card at `x: -1.45, y: 0.70`, tilted right at `y: 10°` (`x: 5, y: 10, z: -2`, scale `0.26`) with dynamic showcase linear tilt drifting across 2000ms. Label "Lumen" at `x: -2.40, y: 0.70, size: 0.068`. At 2100ms, camera executes an outgoing exponential dolly-in push (`1.0 -> 1.8x`) accelerating straight into the cut.
+  * **Audio:** Soft tick `ui-tick-1` at 56015ms (leads cut by 85ms).
 * **7b: Chrome (58.7s – 61.2s / 2500ms)**
   * **Shot ID:** `84fe14a6-9efe-4c83-abf3-ca19960772a2`
-  * **Visual:** Split layout: Mirror Chrome card at identical position and scale; Label "Chrome" (`size: 0.068`).
-  * **Audio:** Soft tick `ui-tick-2` at 58620ms.
+  * **Visual:** Camera decelerates in from wide (`0.556 -> 1.0x`, `ease-out-expo`) over 0–400ms. Polished mirror Chrome card tilted left at `y: -10°` (`x: 3, y: -10, z: 2`, scale `0.26`) showcasing mirror reflections with linear tilt drifting across 2000ms. Label "Chrome". At 2100ms, camera executes an outgoing exponential dolly-in push (`1.0 -> 1.8x`) into the cut.
+  * **Audio:** Soft tick `ui-tick-2` at 58615ms (leads cut by 85ms).
 * **7c: Grid (61.2s – 63.7s / 2500ms)**
   * **Shot ID:** `f821a2b6-7c08-4f1b-bf60-a2ad78f7963a`
-  * **Visual:** Clean graphic Grid card (`card_grid_clean.png`), chip-free and imprint-free. Label "Grid" (`size: 0.068`).
-  * **Audio:** Soft tick `ui-tick-3` at 61120ms.
+  * **Visual:** Camera decelerates in from wide (`0.556 -> 1.0x`) over 0–400ms. Clean graphic Grid card (`card_grid_clean.png`, chip-free and imprint-free) tilted right at `y: 10°` (`x: 5, y: 10, z: -2`, scale `0.26`) with linear tilt drifting across 2000ms. Label "Grid". Outgoing exponential dolly-in push (`1.0 -> 1.8x`) at 2100ms into the cut.
+  * **Audio:** Soft tick `ui-tick-3` at 61115ms (leads cut by 85ms).
 * **7d: Carbon (63.7s – 66.2s / 2500ms)**
   * **Shot ID:** `b3d34f52-7769-4fb1-9843-868836864f2b`
-  * **Visual:** Standalone Carbon card (`card_carbon_clean.png`) with dot-matrix texture. Label "Carbon" (`size: 0.068`).
-  * **Audio:** Soft tick `ui-tick-4` at 63620ms.
+  * **Visual:** Camera decelerates in from wide (`0.556 -> 1.0x`) over 0–400ms. Standalone Carbon card (`card_carbon_clean.png`) with authentic brushed carbon weave tilted left at `y: -12°` (`scale: 0.26`) with linear tilt drifting across 2000ms. Label "Carbon". Outgoing exponential dolly-in push (`1.0 -> 1.8x`) at 2100ms whipping into the 4-card fan-out.
+  * **Audio:** Soft tick `ui-tick-4` at 63615ms (leads cut by 85ms).
 * **7e: Four Editions Fan-Out (66.2s – 70.7s / 4500ms)**
   * **Shot ID:** `bc4047df-006e-416a-ad65-f0443d8a1441` ("S6: 30s Speed")
   * **Visual:** Original dynamic widescreen fan layout restored: All 4 editions fanned out across the canvas (`Lumen: x: -2.84`, `Chrome: x: -2.21`, `Grid: x: -1.59`, `Carbon: x: -0.96`; `y: 0.76`), perspective-tilted and staggered in Z (`z: -0.06, -0.02, +0.02, +0.06`, scale `0.155`). Headline "Four editions. One standard." at `y: 0.30` and subline "Lumen · Chrome · Grid · Carbon" at `y: 0.14`.
