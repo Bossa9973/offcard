@@ -131,8 +131,8 @@
   * **Visual:** Standalone Carbon card (`card_carbon_clean.png`) with dot-matrix texture. Label "Carbon" (`size: 0.068`).
   * **Audio:** Soft tick `ui-tick-4` at 63620ms.
 * **7e: Four Editions Fan-Out (66.2s – 70.7s / 4500ms)**
-  * **Shot ID:** `bc4047df-006e-416a-ad65-f0443d8a1441`
-  * **Visual:** All 4 editions fan out from Carbon (`x: -1.45`) with momentum, settling at `x: -2.29, -2.03, -1.77, -1.54`. All cards safely inside 6% safe margins (Carbon right edge at 745px, Lumen left edge at 152px). Camera dives into hero card logo at 3700–4500ms (`zoom: 1.0 -> 4.5x`).
+  * **Shot ID:** `bc4047df-006e-416a-ad65-f0443d8a1441` ("S6: 30s Speed")
+  * **Visual:** Original dynamic widescreen fan layout restored: All 4 editions fanned out across the canvas (`Lumen: x: -2.84`, `Chrome: x: -2.21`, `Grid: x: -1.59`, `Carbon: x: -0.96`; `y: 0.76`), perspective-tilted and staggered in Z (`z: -0.06, -0.02, +0.02, +0.06`, scale `0.155`). Headline "Four editions. One standard." at `y: 0.30` and subline "Lumen · Chrome · Grid · Carbon" at `y: 0.14`.
   * **Audio:** Fan whoosh at 66120ms; continuous airy pad (zero dips at 1:09).
 
 ### Scene 8: CLOSE (70.7s – 80.2s)
@@ -157,7 +157,7 @@
 | **Wallet Panel (5a)** | `(-2.40, 0.72, z: -0.06)` | `scale: 0.22` | Back plane; slides in from left; dims to 0.4 at tap |
 | **POS Terminal Body (5a)** | `(-1.05, 0.70, z: +0.02)` | `width: 0.44, height: 0.68` | Extruded dark graphite metal solid, depth 0.08 |
 | **POS Screen & States (5a)** | `(-1.05, 0.78, z: +0.05)` | `width: 0.36, height: 0.36` | "Ready" -> "$12.40" -> "Approved" + check icon |
-| **4-Card Fan Cascade (7e)**| `(-2.29, -2.03, -1.77, -1.54, y: 0.76)` | `scale: 0.155` each | Staggered in Z; >0.19 wu top margin; strictly inside frame |
+| **4-Card Fan Cascade (S6 / 7e)**| `(-2.84, -2.21, -1.59, -0.96, y: 0.76)` | `scale: 0.155` each | Original dynamic widescreen fan layout |
 | **Official Brand Lockup (8a, 8b)** | `(-1.90, 0.70 -> 0.84)` | `scale: 0.26` | Centered vector emblem + wordmark alone on silk |
 | **Closing Copy (8b)** | `Spend freely: y=0.44; offcard.me: y=0.26` | `size: 0.068 / 0.052` | >0.12 wu above bottom safe margin (`0.14`) |
 | **Canvas World Dimensions** | Center `(-1.90, 0.70)` | `width: 2.261, height: 1.272` | Authoritative bounds: `X [-3.031, -0.769]`, `Y [0.064, 1.336]` |
