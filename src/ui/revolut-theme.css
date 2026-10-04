@@ -233,6 +233,9 @@ html, body {
    ========================================================================== */
 
 .off-btn {
+	position: relative;
+	overflow: hidden;
+	isolation: isolate;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
@@ -244,7 +247,53 @@ html, body {
 	cursor: pointer;
 	border: 1px solid transparent;
 	white-space: nowrap;
-	transition: transform 0.15s var(--ease-out), box-shadow 0.15s var(--ease-out), background-color 0.15s, border-color 0.15s;
+	transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, background-color 0.2s, border-color 0.2s;
+	will-change: transform;
+}
+
+.off-btn-label,
+.off-btn-icon {
+	position: relative;
+	z-index: 3;
+}
+
+.off-btn-sheen {
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(
+		105deg,
+		transparent 20%,
+		rgba(255, 255, 255, 0.4) 50%,
+		transparent 80%
+	);
+	transform: translateX(-120%);
+	transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+	pointer-events: none;
+	z-index: 1;
+}
+.off-btn:hover .off-btn-sheen {
+	transform: translateX(120%);
+}
+
+.off-btn-internal-ripple {
+	position: absolute;
+	border-radius: 50%;
+	pointer-events: none;
+	background: radial-gradient(circle, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.25) 45%, transparent 75%);
+	transform: scale(0);
+	animation: off-btn-ripple-pop 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+	z-index: 2;
+}
+
+@keyframes off-btn-ripple-pop {
+	0% {
+		transform: scale(0);
+		opacity: 0.95;
+	}
+	100% {
+		transform: scale(1.6);
+		opacity: 0;
+	}
 }
 
 .off-btn--md {
@@ -273,12 +322,16 @@ html, body {
 		0 6px 14px -6px rgba(0, 0, 0, 0.6);
 }
 .off-btn--primary:hover {
-	transform: translateY(-1px);
+	transform: translateY(-2px) scale(1.02);
+	box-shadow:
+		inset 0 1px 0 #ffffff,
+		0 4px 14px rgba(255, 255, 255, 0.25),
+		0 8px 22px -4px rgba(0, 0, 0, 0.7);
 }
 .off-btn--primary:active {
-	transform: translateY(0);
-	box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15), 0 1px 1px rgba(0, 0, 0, 0.4);
-	background: var(--faint);
+	transform: scale(0.94) !important;
+	box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.4);
+	background: #e2e2e4;
 }
 
 /* Dark Pill on Light Band */
@@ -288,14 +341,15 @@ html, body {
 	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 16px -8px rgba(0, 0, 0, 0.45);
 }
 .off-btn--dark:hover {
-	transform: translateY(-1px);
+	transform: translateY(-2px) scale(1.02);
 	background: #000000;
+	box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
 }
 .off-btn--dark:active {
-	transform: translateY(0);
+	transform: scale(0.94) !important;
 }
 
-/* Outline on Light (Pass 2, 3.5: faint border, ink text, ink border on hover) */
+/* Outline on Light */
 .off-btn--outline-light {
 	background: #ffffff;
 	border: 1px solid var(--faint);
@@ -305,9 +359,13 @@ html, body {
 .off-btn--outline-light:hover {
 	border-color: var(--ink);
 	background: var(--surface-soft);
+	transform: translateY(-1px);
+}
+.off-btn--outline-light:active {
+	transform: scale(0.94) !important;
 }
 
-/* Outline on Dark (Pass 2, 3.5 & Pass 3, 9) */
+/* Outline on Dark */
 .off-btn--outline-dark {
 	background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
 	border: 1px solid rgba(255, 255, 255, 0.22);
@@ -315,8 +373,12 @@ html, body {
 	color: #ffffff;
 }
 .off-btn--outline-dark:hover {
-	border-color: rgba(255, 255, 255, 0.5);
-	background: rgba(255, 255, 255, 0.08);
+	border-color: rgba(255, 255, 255, 0.55);
+	background: rgba(255, 255, 255, 0.1);
+	transform: translateY(-1px);
+}
+.off-btn--outline-dark:active {
+	transform: scale(0.94) !important;
 }
 
 .off-btn:focus-visible {
@@ -360,19 +422,6 @@ html, body {
 	height: 56px;
 	border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
-
-.off-nav-scroll-progress {
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	height: 2px;
-	background: var(--gradient-lumen);
-	box-shadow: 0 0 10px rgba(242, 242, 198, 0.45);
-	transition: width 0.08s linear;
-	z-index: 1001;
-	pointer-events: none;
-}
-
 
 .off-nav-container {
 	width: 100%;
@@ -1953,6 +2002,17 @@ html, body {
 	font-weight: 500;
 }
 
+.off-bank-card__footer-right {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.off-bankcard-mc {
+	flex-shrink: 0;
+	filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
+}
+
 .off-bank-card__digits {
 	display: flex;
 	justify-content: space-between;
@@ -2462,31 +2522,67 @@ html, body {
    - Complete prefers-reduced-motion safety
    ========================================================================== */
 
-/* Bento Header reveal */
-.js .off-bento-header {
+/* 1. Hero Kinetic Entrance Reveals */
+.js .off-hero-content {
+	opacity: 0;
+	transform: perspective(1000px) translateY(32px) rotateX(2deg);
+	transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1), filter 0.7s ease;
+	will-change: opacity, transform;
+}
+.js .off-hero-content.is-revealed {
+	opacity: 1;
+	transform: perspective(1000px) translateY(0) rotateX(0);
+}
+
+.js .off-hero-visual {
+	opacity: 0;
+	transform: perspective(1200px) translateY(40px) scale(0.95);
+	transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1) 0.15s, transform 1s cubic-bezier(0.16, 1, 0.3, 1) 0.15s;
+	will-change: opacity, transform;
+}
+.js .off-hero-visual.is-revealed {
+	opacity: 1;
+	transform: perspective(1200px) translateY(0) scale(1);
+}
+
+.js .off-stat-tile-combined {
 	opacity: 0;
 	transform: translateY(28px);
+	transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.25s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.25s;
+	will-change: opacity, transform;
+}
+.js .off-stat-tile-combined.is-revealed {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+/* 2. Bento Header reveal */
+.js .off-bento-header {
+	opacity: 0;
+	transform: perspective(1000px) translateY(30px) rotateX(3deg);
 	transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
 	will-change: opacity, transform;
 }
 .js .off-bento-header.is-revealed {
 	opacity: 1;
-	transform: translateY(0);
+	transform: perspective(1000px) translateY(0) rotateX(0);
 }
 
-/* Bento Grid Tiles: Kinetic Stagger */
+/* 3. Bento Grid Tiles: 3D Kinetic Stagger */
 .js .off-bento-grid-12 > .off-tile {
 	opacity: 0;
-	transform: translateY(32px) scale(0.985);
+	transform: perspective(1000px) translateY(42px) scale(0.96) rotateX(4deg);
+	filter: blur(2px);
 	transition:
-		opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
-		transform 0.75s cubic-bezier(0.16, 1, 0.3, 1),
-		box-shadow 0.25s var(--ease-out);
-	will-change: opacity, transform;
+		opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+		transform 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+		filter 0.65s ease,
+		box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+	will-change: opacity, transform, filter;
 }
 
 .js .off-bento-cards {
-	transition-delay: 0.04s;
+	transition-delay: 0.05s;
 }
 .js .off-bento-currency {
 	transition-delay: 0.16s;
@@ -2501,23 +2597,25 @@ html, body {
 
 .js .off-bento-grid-12 > .off-tile.is-revealed {
 	opacity: 1;
-	transform: translateY(0) scale(1);
+	transform: perspective(1000px) translateY(0) scale(1) rotateX(0);
+	filter: blur(0);
 }
 
 @media (hover: hover) {
 	.js .off-bento-grid-12 > .off-tile.is-revealed:hover {
-		transform: translateY(-3px) scale(1);
+		transform: perspective(1000px) translateY(-5px) scale(1.008);
+		box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.12);
 	}
 }
 
 /* Tile 1 Internal: card visual floating settle */
 .js .off-bento-cards .cards-tile__visual {
-	transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.15s, opacity 0.8s ease 0.15s;
+	transition: transform 0.95s cubic-bezier(0.16, 1, 0.3, 1) 0.15s, opacity 0.8s ease 0.15s;
 	will-change: transform, opacity;
 }
 .js .off-bento-cards:not(.is-revealed) .cards-tile__visual {
-	transform: translate3d(24px, 20px, 0) rotate(1.5deg);
-	opacity: 0.5;
+	transform: translate3d(28px, 24px, 0) rotate(2.5deg);
+	opacity: 0.4;
 }
 .js .off-bento-cards.is-revealed .cards-tile__visual {
 	transform: translate3d(0, 0, 0) rotate(0deg);
@@ -2527,8 +2625,8 @@ html, body {
 /* Tile 1 Internal: Chips row slide-in */
 .js .off-bento-cards .cards-tile__chips .off-chip-raised {
 	opacity: 0;
-	transform: translateY(12px);
-	transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+	transform: translateY(14px);
+	transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1), transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .js .off-bento-cards.is-revealed .cards-tile__chips .off-chip-raised:nth-child(1) {
 	opacity: 1;
@@ -2538,21 +2636,21 @@ html, body {
 .js .off-bento-cards.is-revealed .cards-tile__chips .off-chip-raised:nth-child(2) {
 	opacity: 1;
 	transform: translateY(0);
-	transition-delay: 0.35s;
+	transition-delay: 0.36s;
 }
 .js .off-bento-cards.is-revealed .cards-tile__chips .off-chip-raised:nth-child(3) {
 	opacity: 1;
 	transform: translateY(0);
-	transition-delay: 0.45s;
+	transition-delay: 0.47s;
 }
 
 /* Tile 2 Internal: Ticker box subtle entrance */
 .js .off-bento-currency .off-currency-box {
-	transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s, opacity 0.8s ease 0.1s;
+	transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.1s, opacity 0.8s ease 0.1s;
 }
 .js .off-bento-currency:not(.is-revealed) .off-currency-box {
-	opacity: 0.6;
-	transform: translateY(14px);
+	opacity: 0.5;
+	transform: translateY(18px);
 }
 .js .off-bento-currency.is-revealed .off-currency-box {
 	opacity: 1;
@@ -2562,8 +2660,8 @@ html, body {
 /* Tile 3 Internal: Ledger item rows sequential slide-up */
 .js .off-bento-accounting .off-ledger-item {
 	opacity: 0;
-	transform: translateY(18px);
-	transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+	transform: translateY(20px);
+	transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease, border-color 0.2s ease;
 }
 .js .off-bento-accounting.is-revealed .off-ledger-item:nth-child(1) {
 	opacity: 1;
@@ -2581,50 +2679,93 @@ html, body {
 	transition-delay: 0.46s;
 }
 
+/* Interactive Ledger Item hover & click */
+.off-ledger-item {
+	cursor: pointer;
+	user-select: none;
+	transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+.off-ledger-item:hover {
+	background: rgba(255, 255, 255, 0.05);
+	border-color: rgba(255, 255, 255, 0.18);
+	transform: translateX(4px);
+}
+.off-ledger-item:active {
+	transform: scale(0.97) translateX(2px) !important;
+	border-color: rgba(56, 189, 248, 0.5);
+	box-shadow: 0 0 14px rgba(56, 189, 248, 0.2);
+}
 
-/* Pricing Section header reveal */
+/* 4. Card Architecture Studio (WalletShowcase) */
+.js .card-studio-headline {
+	opacity: 1;
+	transform: perspective(1000px) translateY(0) rotateX(0);
+}
+
+.js .card-studio-tabs {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+.js .card-studio-inspector-col {
+	opacity: 1;
+	transform: perspective(1000px) translateX(0) rotateY(0);
+}
+
+.js .card-studio-stack-col {
+	opacity: 1;
+	transform: perspective(1000px) translateX(0) rotateY(0);
+}
+
+/* 5. Pricing Section header reveal */
 .js .off-pricing-band .off-section-header {
 	opacity: 0;
-	transform: translateY(28px);
+	transform: perspective(1000px) translateY(32px) rotateX(3deg);
 	transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
 	will-change: opacity, transform;
 }
 .js .off-pricing-band .off-section-header.is-revealed {
 	opacity: 1;
-	transform: translateY(0);
+	transform: perspective(1000px) translateY(0) rotateX(0);
 }
 
-/* Pricing Cards: Staggered Elevation Rise */
+/* Pricing Cards: Staggered 3D Elevation Rise */
 .js .off-plan-card {
 	opacity: 0;
-	transform: translateY(38px);
+	transform: perspective(1000px) translateY(48px) scale(0.96) rotateX(4deg);
+	filter: blur(2px);
 	transition:
-		opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--i, 0) * 0.12s),
-		transform 0.75s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--i, 0) * 0.12s),
-		box-shadow 0.25s var(--ease-out);
-	will-change: opacity, transform;
+		opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--i, 0) * 0.14s),
+		transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--i, 0) * 0.14s),
+		filter 0.6s ease,
+		box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+	will-change: opacity, transform, filter;
 }
 .js .off-plan-card.is-revealed {
 	opacity: 1;
-	transform: translateY(0);
+	transform: perspective(1000px) translateY(0) scale(1) rotateX(0);
+	filter: blur(0);
 }
 .js .off-plan-card--featured.is-revealed {
 	opacity: 1;
-	transform: translateY(-8px);
+	transform: perspective(1000px) translateY(-10px) scale(1.02) rotateX(0);
+	box-shadow: 0 18px 48px -12px rgba(0, 0, 0, 0.14), 0 0 0 1px rgba(0, 0, 0, 0.08);
 }
 @media (hover: hover) {
 	.js .off-plan-card.is-revealed:hover {
-		transform: translateY(-4px);
+		transform: perspective(1000px) translateY(-6px) scale(1.015);
+		box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.06);
 	}
 	.js .off-plan-card--featured.is-revealed:hover {
-		transform: translateY(-12px);
+		transform: perspective(1000px) translateY(-16px) scale(1.035);
+		box-shadow: 0 24px 60px -14px rgba(0, 0, 0, 0.2), 0 0 0 1.5px rgba(0, 0, 0, 0.12);
 	}
 }
 
-/* FAQ Section: Lateral converging entrance */
+/* 6. FAQ Section: Staggered Lateral and Row Cascade */
 .js .off-faq-sidebar {
 	opacity: 0;
-	transform: translateX(-24px);
+	transform: translateX(-32px);
 	transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
 	will-change: opacity, transform;
 }
@@ -2635,7 +2776,7 @@ html, body {
 
 .js .off-faq-accordion {
 	opacity: 0;
-	transform: translateX(24px);
+	transform: translateX(32px);
 	transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.1s, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
 	will-change: opacity, transform;
 }
@@ -2644,18 +2785,59 @@ html, body {
 	transform: translateX(0);
 }
 
-/* Closing CTA Card: Radiant Aperture reveal */
+/* Individual FAQ rows cascade on scroll */
+.js .off-faq-row {
+	opacity: 0;
+	transform: translateY(22px);
+	transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+	will-change: opacity, transform;
+}
+.js .off-faq-accordion.is-revealed .off-faq-row:nth-child(1),
+.js .off-faq-row.is-revealed:nth-child(1) {
+	opacity: 1;
+	transform: translateY(0);
+	transition-delay: 0.05s;
+}
+.js .off-faq-accordion.is-revealed .off-faq-row:nth-child(2),
+.js .off-faq-row.is-revealed:nth-child(2) {
+	opacity: 1;
+	transform: translateY(0);
+	transition-delay: 0.14s;
+}
+.js .off-faq-accordion.is-revealed .off-faq-row:nth-child(3),
+.js .off-faq-row.is-revealed:nth-child(3) {
+	opacity: 1;
+	transform: translateY(0);
+	transition-delay: 0.23s;
+}
+.js .off-faq-accordion.is-revealed .off-faq-row:nth-child(4),
+.js .off-faq-row.is-revealed:nth-child(4) {
+	opacity: 1;
+	transform: translateY(0);
+	transition-delay: 0.32s;
+}
+.js .off-faq-accordion.is-revealed .off-faq-row:nth-child(5),
+.js .off-faq-row.is-revealed:nth-child(5) {
+	opacity: 1;
+	transform: translateY(0);
+	transition-delay: 0.41s;
+}
+
+/* 7. Closing CTA Card: Radiant Aperture Reveal */
 .js .off-cta-card {
 	opacity: 0;
-	transform: scale(0.97) translateY(24px);
+	transform: perspective(1000px) scale(0.95) translateY(36px) rotateX(2deg);
+	filter: blur(4px);
 	transition:
-		opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
-		transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
-	will-change: opacity, transform;
+		opacity 0.95s cubic-bezier(0.16, 1, 0.3, 1),
+		transform 0.95s cubic-bezier(0.16, 1, 0.3, 1),
+		filter 0.75s ease;
+	will-change: opacity, transform, filter;
 }
 .js .off-cta-card.is-revealed {
 	opacity: 1;
-	transform: scale(1) translateY(0);
+	transform: perspective(1000px) scale(1) translateY(0) rotateX(0);
+	filter: blur(0);
 }
 
 /* Subtle continuous scroll parallax for desktop */
@@ -2728,50 +2910,109 @@ html, body {
 }
 
 .off-billing-toggle {
+	position: relative;
 	display: inline-flex;
 	align-items: center;
-	background: rgba(0, 0, 0, 0.05);
+	background: rgba(0, 0, 0, 0.06);
 	padding: 4px;
 	border-radius: var(--r-full);
 	border: 1px solid rgba(0, 0, 0, 0.08);
 	gap: 4px;
+	isolation: isolate;
+}
+
+.off-billing-indicator {
+	position: absolute;
+	top: 4px;
+	bottom: 4px;
+	border-radius: var(--r-full);
+	background: #ffffff;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.04);
+	transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+	z-index: 1;
+	pointer-events: none;
+}
+.off-billing-indicator--monthly {
+	left: 4px;
+	width: 86px;
+	transform: translateX(0);
+}
+.off-billing-indicator--annual {
+	left: 4px;
+	width: 148px;
+	transform: translateX(88px);
 }
 
 .off-billing-btn {
+	position: relative;
+	z-index: 2;
 	border: 0;
 	background: transparent;
 	font-family: var(--font-display);
 	font-size: 13px;
 	font-weight: 500;
 	color: var(--mute);
-	padding: 6px 16px;
+	padding: 7px 18px;
 	border-radius: var(--r-full);
 	cursor: pointer;
 	display: inline-flex;
 	align-items: center;
 	gap: 6px;
-	transition: all 0.2s var(--ease-out);
+	transition: color 0.2s ease, transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .off-billing-btn:hover {
 	color: var(--ink);
 }
 
+.off-billing-btn:active {
+	transform: scale(0.94) !important;
+}
+
 .off-billing-btn--active {
-	background: #ffffff;
 	color: var(--ink);
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.04);
 	font-weight: 600;
 }
 
 .off-billing-discount {
-	background: rgba(0, 168, 126, 0.12);
+	background: rgba(0, 168, 126, 0.14);
 	color: #007a5b;
 	font-size: 11px;
 	font-weight: 700;
 	padding: 2px 7px;
 	border-radius: var(--r-full);
 	letter-spacing: 0.02em;
+	transition: transform 0.2s ease;
+}
+.off-billing-btn:hover .off-billing-discount {
+	transform: scale(1.05);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Tactile Button Press & Micro-Interactions (Restrained & Smooth)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Subtle tactile button scale */
+.off-btn:active {
+	transform: scale(0.98) !important;
+}
+
+/* Interactive Pill Press feedback */
+
+/* Interactive Pill Press feedback */
+.off-curr-pill,
+.off-fan-toggle,
+.off-spend-pill,
+.card-studio-tab,
+.off-settlement-replay-btn {
+	transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.off-curr-pill:active,
+.off-fan-toggle:active,
+.off-spend-pill:active,
+.card-studio-tab:active,
+.off-settlement-replay-btn:active {
+	transform: scale(0.92) !important;
 }
 
 /* Featured Plan Specular Top Edge Light Pass */
@@ -3063,6 +3304,17 @@ html, body {
 	align-items: flex-end;
 }
 
+.card3d-footer-right {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.card3d-network-logo {
+	flex-shrink: 0;
+	filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.45));
+}
+
 .card3d-holder {
 	font-size: clamp(0.55rem, 1.6cqi, 0.72rem);
 	font-weight: 500;
@@ -3226,62 +3478,66 @@ html, body {
 	margin-top: 0.75rem;
 }
 
+/* ─── Card Architecture Studio: Clean Segmented Pill Tabs ─────────────────── */
 .card-studio-tabs {
 	display: flex;
 	justify-content: center;
-	gap: 0.5rem;
-	margin-bottom: clamp(2.5rem, 4.5vw, 4rem);
+	align-items: center;
+	gap: 10px;
+	margin-bottom: clamp(2rem, 4vw, 3rem);
 	flex-wrap: wrap;
 }
 
 .card-studio-tab {
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-	gap: 2px;
-	padding: 0.6rem 1.1rem;
-	border-radius: 10px;
-	border: 1px solid rgba(255,255,255,0.08);
-	background: rgba(255,255,255,0.03);
-	color: rgba(255,255,255,0.52);
-	font-family: var(--font-display, sans-serif);
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 10px 18px;
+	border-radius: 9999px;
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	background: rgba(255, 255, 255, 0.04);
+	color: rgba(255, 255, 255, 0.65);
+	font-family: var(--font-body, sans-serif);
 	cursor: pointer;
-	transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.15s;
-	min-width: 110px;
+	transition: all 180ms cubic-bezier(0.16, 1, 0.3, 1);
+	outline: none;
+	user-select: none;
 }
 
 .card-studio-tab:hover {
-	background: rgba(255,255,255,0.06);
-	color: rgba(255,255,255,0.80);
-	border-color: rgba(255,255,255,0.14);
-}
-
-.card-studio-tab--active {
-	border-color: rgba(255,255,255,0.22);
-	background: rgba(255,255,255,0.08);
-	color: rgba(255,255,255,0.95);
+	background: rgba(255, 255, 255, 0.09);
+	border-color: rgba(255, 255, 255, 0.24);
+	color: #ffffff;
 	transform: translateY(-1px);
 }
 
-.card-studio-tab--grid.card-studio-tab--active    { border-left: 3px solid #8c8a6a; }
-.card-studio-tab--chrome.card-studio-tab--active  { border-left: 3px solid #c0b8b0; }
-.card-studio-tab--carbon.card-studio-tab--active  { border-left: 3px solid #686860; }
-.card-studio-tab--lumen.card-studio-tab--active   { border-left: 3px solid #c8b858; }
-
-.card-studio-tab-name {
-	font-size: 0.82rem;
-	font-weight: 600;
-	letter-spacing: 0.01em;
+.card-studio-tab:active {
+	transform: scale(0.97);
 }
 
-.card-studio-tab-material {
-	font-size: 0.65rem;
-	opacity: 0.50;
+.card-studio-tab--active {
+	background: #ffffff !important;
+	color: #000000 !important;
+	border-color: #ffffff !important;
+	box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+}
+
+.card-studio-tab-name {
+	font-size: 14px;
+	font-weight: 600;
+	letter-spacing: -0.01em;
+}
+
+.card-studio-tab-spec {
+	font-size: 12px;
+	font-family: var(--font-body, sans-serif);
+	color: rgba(255, 255, 255, 0.45);
 	font-weight: 400;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	max-width: 120px;
+	transition: color 180ms ease;
+}
+
+.card-studio-tab--active .card-studio-tab-spec {
+	color: rgba(0, 0, 0, 0.55);
 }
 
 .card-studio-duo {
@@ -3345,17 +3601,33 @@ html, body {
 .card-studio-cta {
 	display: inline-flex;
 	align-items: center;
-	gap: 0.35rem;
+	justify-content: center;
+	gap: 0.5rem;
+	padding: 12px 24px;
+	border-radius: var(--r-full);
+	background: rgba(255, 255, 255, 0.08);
+	border: 1px solid rgba(255, 255, 255, 0.18);
 	font-size: 0.875rem;
 	font-weight: 600;
-	color: rgba(255,255,255,0.80);
+	color: #ffffff;
 	text-decoration: none;
 	letter-spacing: 0.01em;
-	transition: color 0.2s, gap 0.2s;
+	transition: background 0.25s ease, border-color 0.25s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease, gap 0.2s ease;
 	font-family: var(--font-display, sans-serif);
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
-.card-studio-cta:hover { color: #fff; gap: 0.55rem; }
+.card-studio-cta:hover {
+	background: rgba(255, 255, 255, 0.16);
+	border-color: rgba(255, 255, 255, 0.45);
+	transform: translateY(-2px) scale(1.02);
+	gap: 0.75rem;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), 0 0 16px rgba(255, 255, 255, 0.12);
+}
+
+.card-studio-cta:active {
+	transform: scale(0.95) !important;
+}
 
 .card-studio-stack-col {
 	display: flex;
@@ -3736,6 +4008,7 @@ html, body {
 		font-size: 0.78rem;
 	}
 
+	.card-studio-tab-spec,
 	.card-studio-tab-material {
 		font-size: 0.62rem;
 	}

@@ -156,30 +156,33 @@ export function WalletShowcase({
 				{/* Section headline */}
 				<div className="card-studio-headline">
 					<h2 id="card-studio-title" className="off-bento-h2">
-						Physical & Virtual Cards
+						Physical &amp; Virtual Cards
 					</h2>
 					<p className="off-bento-lead card-studio-sub">
 						Four physical card editions engineered for leadership, team procurement, and everyday business spending.
 					</p>
 				</div>
 
-				{/* Edition selector tabs */}
+				{/* Clean Segmented Edition Selector */}
 				<div className="card-studio-tabs" role="tablist" aria-label="Card edition selector">
-					{ELEMENTAL_CARDS.map((card, i) => (
-						<button
-							key={card.id}
-							type="button"
-							role="tab"
-							id={`tab-${card.id}`}
-							aria-selected={i === activeIndex}
-							aria-controls={`panel-${card.id}`}
-							className={`card-studio-tab${i === activeIndex ? " card-studio-tab--active" : ""} card-studio-tab--${card.variant}`}
-							onClick={() => handleTabSelect(i)}
-						>
-							<span className="card-studio-tab-name">{card.product}</span>
-							<span className="card-studio-tab-material">{card.materialSpec.split(",")[0]}</span>
-						</button>
-					))}
+					{ELEMENTAL_CARDS.map((card, i) => {
+						const isSelected = i === activeIndex;
+						return (
+							<button
+								key={card.id}
+								type="button"
+								role="tab"
+								id={`tab-${card.id}`}
+								aria-selected={isSelected}
+								aria-controls={`panel-${card.id}`}
+								className={`card-studio-tab${isSelected ? " card-studio-tab--active" : ""}`}
+								onClick={() => handleTabSelect(i)}
+							>
+								<span className="card-studio-tab-name">{card.product}</span>
+								<span className="card-studio-tab-spec">{card.massGrams}g · {card.materialSpec.split(",")[0]}</span>
+							</button>
+						);
+					})}
 				</div>
 
 				{/* Main dual-column studio */}
@@ -217,12 +220,13 @@ export function WalletShowcase({
 
 					{/* ── RIGHT: Wallet Stack ── */}
 					<div className="card-studio-stack-col">
-						<p className="card-studio-stack-label">Wallet</p>
+						<p className="card-studio-stack-label">Treasury Wallet Stack</p>
 						<WalletStack
 							cards={ELEMENTAL_CARDS}
 							label="Card editions"
 							currency="USD"
 							locale="en-US"
+							activeIndex={activeIndex}
 							onFrontChange={handleWalletFrontChange}
 							className="card-studio-wallet"
 						/>

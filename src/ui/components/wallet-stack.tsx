@@ -18,6 +18,7 @@ import {
 import { motion, AnimatePresence } from "motion/react";
 import { ArrowLeft } from "lucide-react";
 import { Wordmark } from "./wordmark";
+import { MastercardLogo } from "./mastercard-logo";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -56,6 +57,8 @@ export interface WalletStackProps {
 	onSelectedChange?: (card: WalletCard | null) => void;
 	/** Called when front card index changes */
 	onFrontChange?: (index: number) => void;
+	/** Controlled active front index */
+	activeIndex?: number;
 	className?: string;
 }
 
@@ -70,8 +73,8 @@ function formatCurrency(amount: number, currency = "USD", locale = "en-US") {
 	}).format(amount);
 }
 
-const SPRING = { stiffness: 340, damping: 36, mass: 1 } as const;
-const SPRING_FAST = { stiffness: 500, damping: 40 } as const;
+const SPRING = { stiffness: 280, damping: 30 } as const;
+const SPRING_FAST = { stiffness: 420, damping: 36 } as const;
 
 // Per-variant text colour for overlaid typography (artwork is dark for all 4)
 const TEXT_COLOR: Record<string, string> = {
@@ -81,33 +84,32 @@ const TEXT_COLOR: Record<string, string> = {
 	lumen: "rgba(255,255,255,0.95)",
 };
 
+const CHIP_GRAD: Record<string, string> = {
+	grid: "linear-gradient(135deg, #7a7060 0%, #c8b870 45%, #a08840 100%)",
+	chrome: "linear-gradient(135deg, #b0a8a0 0%, #e0d8c8 45%, #908878 100%)",
+	carbon: "linear-gradient(135deg, #585850 0%, #989080 45%, #484840 100%)",
+	lumen: "linear-gradient(135deg, #c0b060 0%, #f0e098 45%, #a09040 100%)",
+};
+
 // ─── Card face ────────────────────────────────────────────────────────────────
 
 function CardFace({
 	card,
 	isFront,
 	isHovered,
-	pointerX,
-	pointerY,
 }: {
 	card: WalletCard;
 	isFront: boolean;
 	isHovered: boolean;
-	pointerX: number;
-	pointerY: number;
 }) {
 	const variant = card.variant ?? "grid";
 	const textColor = TEXT_COLOR[variant] ?? "rgba(255,255,255,0.92)";
-	const glareX = isHovered ? pointerX * 100 : 50;
-	const glareY = isHovered ? pointerY * 100 : 40;
 
 	return (
 		<div
 			className={`ws-card-face ws-card-face--${variant}`}
 			style={{
 				color: textColor,
-				"--ws-glare-x": `${glareX}%`,
-				"--ws-glare-y": `${glareY}%`,
 			} as React.CSSProperties}
 			aria-hidden="true"
 		>
@@ -157,7 +159,10 @@ function CardFace({
 
 			{/* ── Mid: Metallic EMV Chip ── */}
 			<div className="ws-card-chip-row">
-				<div className="ws-card-chip">
+				<div
+					className={`ws-card-chip ws-card-chip--${variant}`}
+					style={{ background: CHIP_GRAD[variant] ?? CHIP_GRAD.grid }}
+				>
 					<svg
 						width="100%"
 						height="100%"
@@ -172,7 +177,7 @@ function CardFace({
 				</div>
 			</div>
 
-			{/* ── Footer: card number + holder ── */}
+			{/* ── Footer: card number + holder + expiry + Mastercard logo ── */}
 			<div className="ws-card-footer">
 				<div className="ws-card-number">
 					<span aria-hidden="true">•••• •••• ••••</span>{" "}
@@ -180,12 +185,15 @@ function CardFace({
 				</div>
 				<div className="ws-card-meta">
 					<div className="ws-card-holder">{card.holder.toUpperCase()}</div>
-					{card.expires && (
-						<div className="ws-card-expires">
-							<span className="ws-card-meta-label">VALID THRU</span>
-							<span className="ws-card-meta-value">{card.expires}</span>
-						</div>
-					)}
+					<div className="ws-card-footer-right">
+						{card.expires && (
+							<div className="ws-card-expires">
+								<span className="ws-card-meta-label">VALID THRU</span>
+								<span className="ws-card-meta-value">{card.expires}</span>
+							</div>
+						)}
+						<MastercardLogo width={30} textColor="#ffffff" className="ws-card-network-logo" />
+					</div>
 				</div>
 			</div>
 		</div>
@@ -226,10 +234,7 @@ function StackCard({
 	const isFront = relPos === 0;
 	const stackY = relPos * 10;
 	const scale = 1 - relPos * 0.028;
-	const zIndex = total - relPos;
-
-	const [px, setPx] = useState(0.5);
-	const [py, setPy] = useState(0.4);
+	const zIndex = isFront ? total + 5 : (total - relPos);
 
 	const y = isOpen && isFront ? -220 : isOpen ? 60 + relPos * 14 : isFanning && isFront ? -8 : stackY;
 	const scaleVal = isOpen && isFront ? 1.04 : isOpen ? scale * 0.86 : scale;
@@ -258,8 +263,10 @@ function StackCard({
 			onPointerMove={(e: ReactPointerEvent<HTMLButtonElement>) => {
 				if (!isFront) return;
 				const r = e.currentTarget.getBoundingClientRect();
-				setPx((e.clientX - r.left) / r.width);
-				setPy((e.clientY - r.top) / r.height);
+				const nx = (e.clientX - r.left) / r.width;
+				const ny = (e.clientY - r.top) / r.height;
+				e.currentTarget.style.setProperty("--ws-glare-x", `${(nx * 100).toFixed(1)}%`);
+				e.currentTarget.style.setProperty("--ws-glare-y", `${(ny * 100).toFixed(1)}%`);
 			}}
 			onClick={handleClick}
 			tabIndex={isFront ? 0 : -1}
@@ -271,8 +278,6 @@ function StackCard({
 				card={card}
 				isFront={isFront}
 				isHovered={isFanning && isFront}
-				pointerX={px}
-				pointerY={py}
 			/>
 		</motion.button>
 	);
@@ -358,9 +363,11 @@ export function WalletStack({
 	locale = "en-US",
 	onSelectedChange,
 	onFrontChange,
+	activeIndex,
 	className = "",
 }: WalletStackProps) {
-	const [frontIndex, setFrontIndex] = useState(0);
+	const [internalFrontIndex, setInternalFrontIndex] = useState(0);
+	const frontIndex = activeIndex !== undefined ? activeIndex : internalFrontIndex;
 	const [selectedId, setSelectedId] = useState<string | null>(null);
 	const [fanning, setFanning] = useState(false);
 	const [countUp, setCountUp] = useState(0);
@@ -396,12 +403,12 @@ export function WalletStack({
 	}, [onSelectedChange]);
 
 	const cycleFront = useCallback((delta: number) => {
-		setFrontIndex((p) => {
-			const next = ((p + delta) % cards.length + cards.length) % cards.length;
-			onFrontChange?.(next);
-			return next;
-		});
-	}, [cards.length, onFrontChange]);
+		const next = ((frontIndex + delta) % cards.length + cards.length) % cards.length;
+		if (activeIndex === undefined) {
+			setInternalFrontIndex(next);
+		}
+		onFrontChange?.(next);
+	}, [cards.length, onFrontChange, frontIndex, activeIndex]);
 
 	/** Bring a specific card (by cards array index) to the front */
 	const bringToFront = useCallback((cardIndex: number) => {
@@ -409,9 +416,11 @@ export function WalletStack({
 		if (selectedId !== null) {
 			openCard(cards[cardIndex].id);
 		}
-		setFrontIndex(cardIndex);
+		if (activeIndex === undefined) {
+			setInternalFrontIndex(cardIndex);
+		}
 		onFrontChange?.(cardIndex);
-	}, [cards, selectedId, openCard, onFrontChange]);
+	}, [cards, selectedId, openCard, onFrontChange, activeIndex]);
 
 	const handleKeyDown = useCallback((e: KeyboardEvent<HTMLDivElement>) => {
 		switch (e.key) {
@@ -431,11 +440,11 @@ export function WalletStack({
 				break;
 			case "Home":
 				e.preventDefault();
-				if (selectedId) openCard(cards[0].id); else setFrontIndex(0);
+				if (selectedId) openCard(cards[0].id); else bringToFront(0);
 				break;
 			case "End":
 				e.preventDefault();
-				if (selectedId) openCard(cards[cards.length - 1].id); else setFrontIndex(cards.length - 1);
+				if (selectedId) openCard(cards[cards.length - 1].id); else bringToFront(cards.length - 1);
 				break;
 			case "Enter": case " ":
 				e.preventDefault();
@@ -446,7 +455,7 @@ export function WalletStack({
 				closeCard();
 				break;
 		}
-	}, [cards, cycleFront, closeCard, frontIndex, openCard, selectedId]);
+	}, [cards, cycleFront, closeCard, frontIndex, openCard, selectedId, bringToFront]);
 
 	if (!cards.length) return null;
 

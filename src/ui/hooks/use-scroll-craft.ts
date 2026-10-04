@@ -30,7 +30,7 @@ export function useScrollCraft(containerRef: RefObject<HTMLElement | null>) {
 			return;
 		}
 
-		// 1. IntersectionObserver for one-shot physical entrances
+		// 1. IntersectionObserver for physical scroll reveals
 		const revealObserver = new IntersectionObserver(
 			(entries) => {
 				for (const entry of entries) {
@@ -41,28 +41,46 @@ export function useScrollCraft(containerRef: RefObject<HTMLElement | null>) {
 				}
 			},
 			{
-				threshold: 0.1,
-				rootMargin: "0px 0px -30px 0px",
+				threshold: 0.12,
+				rootMargin: "0px 0px -40px 0px",
 			}
 		);
 
 		const revealSelectors = [
 			"[data-sc-reveal]",
+			".off-hero-content",
+			".off-hero-visual",
+			".off-stat-tile-combined",
 			".off-bento-header",
 			".off-tile",
+			".cards-tile__meter-wrap",
+			".cards-tile__visual",
+			".cards-tile__chips",
+			".off-currency-box",
+			".off-ledger-list",
+			".off-ledger-item",
+			".off-settlement-timeline",
+			".card-studio-headline",
+			".card-studio-tabs",
+			".card-studio-inspector-col",
+			".card-studio-stack-col",
 			".off-section-header",
+			".off-billing-toggle-wrap",
 			".off-plan-card",
 			".off-faq-sidebar",
 			".off-faq-accordion",
+			".off-faq-row",
 			".off-cta-card",
-			".off-settlement-timeline",
 		];
 
-		const targets = root.querySelectorAll(revealSelectors.join(", "));
-		targets.forEach((el) => {
+		const targets = root.querySelectorAll<HTMLElement>(revealSelectors.join(", "));
+		targets.forEach((el, index) => {
 			const rect = el.getBoundingClientRect();
 			if (rect.top < window.innerHeight && rect.bottom > 0) {
-				el.classList.add("is-revealed");
+				// Above fold: staggered initial entrance sequence
+				setTimeout(() => {
+					el.classList.add("is-revealed");
+				}, Math.min(600, index * 60 + 50));
 			} else {
 				revealObserver.observe(el);
 			}
@@ -72,6 +90,7 @@ export function useScrollCraft(containerRef: RefObject<HTMLElement | null>) {
 		const sections = root.querySelectorAll<HTMLElement>("section.off-band");
 		const heroSection = root.querySelector<HTMLElement>(".off-hero-band");
 		const bentoSection = root.querySelector<HTMLElement>(".off-bento-band");
+		const studioSection = root.querySelector<HTMLElement>(".card-studio-band");
 		const pricingSection = root.querySelector<HTMLElement>(".off-pricing-band");
 		const ctaSection = root.querySelector<HTMLElement>(".off-cta-band");
 		const cardStack = root.querySelector<HTMLElement>(".off-hero-card-stack");
@@ -104,12 +123,9 @@ export function useScrollCraft(containerRef: RefObject<HTMLElement | null>) {
 			// Hero 3D Card Fanning & Spatial Separation
 			if (heroSection && cardStack) {
 				const heroRect = heroSection.getBoundingClientRect();
-				// Progress from 0 (at very top) to 1 (when hero completely scrolls out)
 				const heroP = Math.max(0, Math.min(1, -heroRect.top / Math.max(1, heroRect.height)));
 				root.style.setProperty("--sc-hero-p", heroP.toFixed(4));
 
-				// 3D spatial separation parameters
-				// As user scrolls the first 45% of the hero, the cards fan out in 3D
 				const fanSpread = Math.min(1, heroP * 2.2);
 				cardStack.style.setProperty("--sc-hero-spread", `${(fanSpread * 60).toFixed(1)}px`);
 				cardStack.style.setProperty("--sc-hero-pitch", `${(heroP * -12).toFixed(2)}deg`);
@@ -125,10 +141,18 @@ export function useScrollCraft(containerRef: RefObject<HTMLElement | null>) {
 				root.style.setProperty("--sc-bento-p", bentoP.toFixed(4));
 			}
 
+			// Card Studio Section Progress
+			if (studioSection) {
+				const studioRect = studioSection.getBoundingClientRect();
+				const studioTravel = vh + studioRect.height;
+				const studioCurrent = vh - studioRect.top;
+				const studioP = Math.max(0, Math.min(1, studioCurrent / studioTravel));
+				root.style.setProperty("--sc-studio-p", studioP.toFixed(4));
+			}
+
 			// Horizon Mode Wipe (Dark Bento -> Light Pricing boundary)
 			if (pricingSection) {
 				const pricingRect = pricingSection.getBoundingClientRect();
-				// Horizon progress: 0 when pricing is below fold, 1 when pricing occupies full screen
 				const horizonP = Math.max(0, Math.min(1, (vh - pricingRect.top) / (vh * 0.85)));
 				root.style.setProperty("--sc-horizon-p", horizonP.toFixed(4));
 			}

@@ -41,7 +41,6 @@ export function SignIn({
 	const currentYear = new Date().getFullYear();
 	const pageRef = useRef<HTMLDivElement>(null);
 	const [scrolled, setScrolled] = useState(false);
-	const [scrollProgress, setScrollProgress] = useState(0);
 	const [activeSection, setActiveSection] = useState<string>("features");
 	const [billingPeriod, setBillingPeriod] = useState<"monthly" | "annual">("monthly");
 
@@ -55,15 +54,11 @@ export function SignIn({
 	useEffect(() => {
 		const onScroll = () => {
 			setScrolled(window.scrollY > 24);
-			const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-			if (maxScroll > 0) {
-				setScrollProgress(Math.min(100, Math.max(0, (window.scrollY / maxScroll) * 100)));
-			}
 		};
 		window.addEventListener("scroll", onScroll, { passive: true });
 		onScroll();
 
-		const sections = ["features", "pricing", "faq"];
+		const sections = ["hero", "features", "card-designs", "pricing", "faq"];
 		const observer = new IntersectionObserver(
 			(entries) => {
 				for (const entry of entries) {
@@ -72,7 +67,7 @@ export function SignIn({
 					}
 				}
 			},
-			{ threshold: 0.3 }
+			{ threshold: 0.25 }
 		);
 
 		sections.forEach((id) => {
@@ -113,16 +108,9 @@ export function SignIn({
 			</a>
 
 			{/* =================================================================
-			    7.1 Nav (Scroll-Craft Compact Bar with Dynamic Scroll Progress Line)
+			    7.1 Nav (Clean Sticky Navigation Bar)
 			    ================================================================= */}
 			<header className={`off-nav-sticky ${scrolled ? "off-nav-sticky--scrolled" : ""}`}>
-				{/* Dynamic scroll journey progress line */}
-				<div
-					className="off-nav-scroll-progress"
-					style={{ width: `${scrollProgress.toFixed(1)}%` }}
-					aria-hidden="true"
-				/>
-
 				<div className="off-nav-container">
 					<a href="/" className="off-brand-link" aria-label="Off-Card Home" data-keep-clear="nav-brand">
 						<Wordmark variant="dark" size="md" />
@@ -134,6 +122,12 @@ export function SignIn({
 							className={`off-nav-link ${activeSection === "features" ? "off-nav-link--active" : ""}`}
 						>
 							Features
+						</a>
+						<a
+							href="#card-designs"
+							className={`off-nav-link ${activeSection === "card-designs" ? "off-nav-link--active" : ""}`}
+						>
+							Cards
 						</a>
 						<a
 							href="#pricing"
@@ -170,7 +164,7 @@ export function SignIn({
 				    - 3D physical hero card stack
 				    - Credible performance benchmarks
 				    ================================================================= */}
-				<section className="off-band off-band--dark off-hero-band" aria-label="Introduction">
+				<section id="hero" className="off-band off-band--dark off-hero-band" aria-label="Introduction">
 					{/* Living value-noise halftone field */}
 					<HalftoneField variant="hero" pitch={22} className="off-hero-halftone" />
 
@@ -420,6 +414,11 @@ export function SignIn({
 							{/* Interactive Billing Frequency Switcher */}
 							<div className="off-billing-toggle-wrap" data-keep-clear="pricing-toggle">
 								<div className="off-billing-toggle" role="radiogroup" aria-label="Billing frequency selection">
+									{/* Elastic sliding pill indicator */}
+									<div
+										className={`off-billing-indicator off-billing-indicator--${billingPeriod}`}
+										aria-hidden="true"
+									/>
 									<button
 										type="button"
 										role="radio"

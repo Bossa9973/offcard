@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 import { Pinstripe } from "./pinstripe";
 import { Wordmark } from "./wordmark";
 import { CurrencyIcon } from "./currency-icons";
+import { MastercardLogo } from "./mastercard-logo";
 
 export interface BankCardProps {
 	variant: "dark" | "light";
@@ -163,7 +164,10 @@ export function BankCard({
 						<div className="off-bank-card__balance off-bank-card__balance--large">{balance}</div>
 						<div className="off-bank-card__sub-balance-row">
 							<span>{subBalance || "Available balance"}</span>
-							<span className="off-bank-card__footer-expiry">{expiry}</span>
+							<div className="off-bank-card__footer-right">
+								<span className="off-bank-card__footer-expiry">{expiry}</span>
+								<MastercardLogo width={30} textColor="#000000" className="off-bankcard-mc" />
+							</div>
 						</div>
 					</div>
 				) : (
@@ -171,7 +175,10 @@ export function BankCard({
 					<>
 						<div className="off-bank-card__digits" data-keep-clear="card-digits">
 							<span className="off-card-num-text">{displayCardNumber}</span>
-							<span className="off-card-expiry-text">{expiry}</span>
+							<div className="off-bank-card__footer-right">
+								<span className="off-card-expiry-text">{expiry}</span>
+								<MastercardLogo width={30} textColor="#ffffff" className="off-bankcard-mc" />
+							</div>
 						</div>
 						{holder && !cardNumber && (
 							<div className="off-bank-card__holder" data-keep-clear="card-holder">{holder}</div>

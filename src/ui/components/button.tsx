@@ -1,4 +1,4 @@
-import type { ReactNode, ButtonHTMLAttributes, AnchorHTMLAttributes } from "react";
+import type { ReactNode } from "react";
 
 export type ButtonVariant = "primary" | "dark" | "soft" | "outline-light" | "outline-dark";
 export type ButtonSize = "md" | "sm";
@@ -51,8 +51,9 @@ export function Button({
 
 	const content = (
 		<>
-			<span>{children}</span>
+			<span className="off-btn-label">{children}</span>
 			{icon === true ? <ArrowUpRightIcon /> : icon ? icon : null}
+			<span className="off-btn-sheen" aria-hidden="true" />
 		</>
 	);
 
@@ -80,3 +81,4 @@ export function Button({
 		</button>
 	);
 }
+

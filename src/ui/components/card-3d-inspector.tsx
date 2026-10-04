@@ -19,6 +19,7 @@ import {
 } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Wordmark } from "./wordmark";
+import { MastercardLogo } from "./mastercard-logo";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -92,32 +93,41 @@ function EMVChip({ variant }: { variant: string }) {
 	);
 }
 
+// ─── Preloaded Artwork Assets ────────────────────────────────────────────────
+const ALL_EDITION_ARTWORKS = [
+	{ id: "grid", image: "/images/cards/card-grid.jpg" },
+	{ id: "chrome", image: "/images/cards/card-chrome.jpg" },
+	{ id: "carbon", image: "/images/cards/card-carbon.jpg" },
+	{ id: "lumen", image: "/images/cards/card-lumen.jpg" },
+];
+
 // ─── Front Face ───────────────────────────────────────────────────────────────
 
 function CardFront({
 	card,
-	glareX,
-	glareY,
 	isHovered,
 }: {
 	card: InspectorCardData;
-	glareX: number;
-	glareY: number;
 	isHovered: boolean;
 }) {
 	return (
 		<div
 			className={`card3d-face card3d-face--front card3d-face--${card.variant}`}
-			style={{
-				"--card3d-glare-x": `${glareX}%`,
-				"--card3d-glare-y": `${glareY}%`,
-			} as React.CSSProperties}
 		>
-			{/* Full-bleed brand artwork */}
-			<div
-				className="card3d-artwork"
-				style={{ backgroundImage: `url(${card.image})` }}
-			/>
+			{/* All 4 brand artworks pre-rendered and stacked for instant zero-lag GPU crossfade */}
+			{ALL_EDITION_ARTWORKS.map((item) => (
+				<div
+					key={item.id}
+					className="card3d-artwork"
+					style={{
+						backgroundImage: `url(${item.image})`,
+						opacity: item.id === card.id ? 1 : 0,
+						transition: "opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1)",
+						pointerEvents: "none",
+					}}
+					aria-hidden="true"
+				/>
+			))}
 
 			{/* Dark overlay for legibility */}
 			<div
@@ -166,7 +176,7 @@ function CardFront({
 				<EMVChip variant={card.variant} />
 			</div>
 
-			{/* Footer row: masked PAN + holder + expiry */}
+			{/* Footer row: masked PAN + holder + expiry + Mastercard logo */}
 			<div className="card3d-footer">
 				<div className="card3d-pan">
 					<span aria-hidden="true">•••• •••• ••••</span>{" "}
@@ -174,9 +184,12 @@ function CardFront({
 				</div>
 				<div className="card3d-footer-meta">
 					<span className="card3d-holder">{card.holder.toUpperCase()}</span>
-					<div className="card3d-expiry">
-						<span className="card3d-expiry-label">VALID THRU</span>
-						<span className="card3d-expiry-value">{card.expires}</span>
+					<div className="card3d-footer-right">
+						<div className="card3d-expiry">
+							<span className="card3d-expiry-label">VALID THRU</span>
+							<span className="card3d-expiry-value">{card.expires}</span>
+						</div>
+						<MastercardLogo width={38} textColor="#ffffff" className="card3d-network-logo" />
 					</div>
 				</div>
 			</div>
@@ -189,11 +202,20 @@ function CardFront({
 function CardBack({ card }: { card: InspectorCardData }) {
 	return (
 		<div className={`card3d-face card3d-face--back card3d-face--${card.variant}`}>
-			{/* Full-bleed artwork on back too, flipped */}
-			<div
-				className="card3d-artwork card3d-artwork--back"
-				style={{ backgroundImage: `url(${card.image})` }}
-			/>
+			{/* All 4 artworks stacked for instant GPU crossfade on back too */}
+			{ALL_EDITION_ARTWORKS.map((item) => (
+				<div
+					key={item.id}
+					className="card3d-artwork card3d-artwork--back"
+					style={{
+						backgroundImage: `url(${item.image})`,
+						opacity: item.id === card.id ? 1 : 0,
+						transition: "opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1)",
+						pointerEvents: "none",
+					}}
+					aria-hidden="true"
+				/>
+			))}
 			<div className="card3d-overlay" style={{ background: VARIANT_OVERLAY[card.variant] }} />
 			<div className="card3d-rim" />
 
@@ -271,17 +293,13 @@ function FlipButton({ isBack, onClick }: { isBack: boolean; onClick: () => void 
 
 export function Card3DInspector({ card, onFlip, className = "" }: Card3DInspectorProps) {
 	const [isFlipped, setIsFlipped] = useState(false);
-	const [rotX, setRotX] = useState(0);
-	const [rotY, setRotY] = useState(0);
-	const [glareX, setGlareX] = useState(50);
-	const [glareY, setGlareY] = useState(40);
 	const [isHovered, setIsHovered] = useState(false);
 	const cardRef = useRef<HTMLDivElement>(null);
 	const rafRef = useRef<number>(0);
 
 	const handlePointerMove = useCallback((e: ReactPointerEvent<HTMLDivElement>) => {
 		const el = cardRef.current;
-		if (!el) return;
+		if (!el || isFlipped) return;
 		const rect = el.getBoundingClientRect();
 		const nx = (e.clientX - rect.left) / rect.width;
 		const ny = (e.clientY - rect.top) / rect.height;
@@ -291,38 +309,41 @@ export function Card3DInspector({ card, onFlip, className = "" }: Card3DInspecto
 
 		cancelAnimationFrame(rafRef.current);
 		rafRef.current = requestAnimationFrame(() => {
-			setRotX(targetRotX);
-			setRotY(targetRotY);
-			setGlareX(nx * 100);
-			setGlareY(ny * 100);
+			if (!el) return;
+			el.style.transform = `perspective(1200px) rotateX(${targetRotX.toFixed(2)}deg) rotateY(${targetRotY.toFixed(2)}deg)`;
+			el.style.setProperty("--card3d-glare-x", `${(nx * 100).toFixed(1)}%`);
+			el.style.setProperty("--card3d-glare-y", `${(ny * 100).toFixed(1)}%`);
 		});
-	}, []);
+	}, [isFlipped]);
 
 	const handlePointerLeave = useCallback(() => {
 		setIsHovered(false);
-		const ease = () => {
-			setRotX((v) => {
-				const next = v * 0.82;
-				return Math.abs(next) < 0.05 ? 0 : next;
-			});
-			setRotY((v) => {
-				const next = v * 0.82;
-				return Math.abs(next) < 0.05 ? 0 : next;
-			});
-		};
-		const loop = () => {
-			ease();
-			rafRef.current = requestAnimationFrame(loop);
-		};
-		loop();
-		setTimeout(() => cancelAnimationFrame(rafRef.current), 600);
-	}, []);
+		const el = cardRef.current;
+		if (!el) return;
+		cancelAnimationFrame(rafRef.current);
+		el.style.transition = "transform 0.75s cubic-bezier(0.22, 1, 0.36, 1)";
+		el.style.transform = isFlipped
+			? "perspective(1200px) rotateX(0deg) rotateY(180deg)"
+			: "perspective(1200px) rotateX(0deg) rotateY(0deg)";
+		setTimeout(() => {
+			if (el) el.style.transition = "";
+		}, 750);
+	}, [isFlipped]);
 
 	const handleFlip = useCallback(() => {
 		const next = !isFlipped;
 		setIsFlipped(next);
-		setRotX(0);
-		setRotY(0);
+		const el = cardRef.current;
+		if (el) {
+			// Buttery-smooth, luxurious easing with natural inertia (no snappy snap)
+			el.style.transition = "transform 0.88s cubic-bezier(0.22, 1, 0.36, 1)";
+			el.style.transform = next
+				? "perspective(1200px) rotateX(0deg) rotateY(180deg)"
+				: "perspective(1200px) rotateX(0deg) rotateY(0deg)";
+			setTimeout(() => {
+				if (el) el.style.transition = "";
+			}, 880);
+		}
 		onFlip?.(next);
 	}, [isFlipped, onFlip]);
 
@@ -338,13 +359,11 @@ export function Card3DInspector({ card, onFlip, className = "" }: Card3DInspecto
 					ref={cardRef}
 					className="card3d-scene"
 					style={{
-						transform: `perspective(1200px) rotateX(${rotX}deg) rotateY(${rotY + (isFlipped ? 180 : 0)}deg)`,
+						transform: isFlipped
+							? "perspective(1200px) rotateX(0deg) rotateY(180deg)"
+							: "perspective(1200px) rotateX(0deg) rotateY(0deg)",
 					}}
-					onPointerMove={(e) => {
-						if (isFlipped) return; // tilt only on front
-						setIsHovered(true);
-						handlePointerMove(e);
-					}}
+					onPointerMove={handlePointerMove}
 					onPointerLeave={handlePointerLeave}
 					onPointerEnter={() => !isFlipped && setIsHovered(true)}
 					onClick={handleFlip}
@@ -353,7 +372,7 @@ export function Card3DInspector({ card, onFlip, className = "" }: Card3DInspecto
 					aria-label={`Off-Card ${card.product} — click to ${isFlipped ? "show front" : "flip to back"}`}
 					onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handleFlip(); } }}
 				>
-					<CardFront card={card} glareX={glareX} glareY={glareY} isHovered={isHovered} />
+					<CardFront card={card} isHovered={isHovered} />
 					<CardBack card={card} />
 				</div>
 
