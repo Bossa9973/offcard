@@ -125,23 +125,28 @@
 ### Scene 7: EDITIONS (56.2s – 70.7s)
 * **7a: Lumen (56.2s – 58.7s / 2500ms)**
   * **Shot ID:** `fcf2a10d-069d-4c0d-87c2-4b3e879603f4`
-  * **Visual:** Split composition: Iridescent Lumen card on right (`x: -1.45, y: 0.70, scale: 0.28, y: 13°`); Label "Lumen" on left (`x: -2.40, y: 0.70, size: 0.082, weight: 600`, left-aligned).
+  * **Visual:** Split composition: Iridescent Lumen card on right (`x: -1.45, y: 0.70, scale: 0.26, y: 10°`); Label "Lumen" on left (`x: -2.40, y: 0.70, size: 0.068, weight: 600`, left-aligned).
+  * **Transition:** Outgoing speed cut accelerating into cut at 58700ms (`ratio: 1.8, curve: expo, duration: 400ms`).
   * **Audio:** Soft tick `ui-tick-1` at cut (56200ms).
 * **7b: Chrome (58.7s – 61.2s / 2500ms)**
   * **Shot ID:** `84fe14a6-9efe-4c83-abf3-ca19960772a2`
-  * **Visual:** Split composition: Polished mirror Chrome card on right (`x: -1.45, y: 0.70, scale: 0.28, y: -13°`); Label "Chrome" on left (`x: -2.40, y: 0.70, size: 0.082, weight: 600`, left-aligned).
+  * **Visual:** Split composition: Polished mirror Chrome card on right (`x: -1.45, y: 0.70, scale: 0.26, y: -10°`); Label "Chrome" on left (`x: -2.40, y: 0.70, size: 0.068, weight: 600`, left-aligned).
+  * **Transition:** Incoming deceleration from speed cut (0–400ms); steady hold (400–2100ms); outgoing acceleration into cut at 61200ms (`ratio: 1.8, curve: expo`).
   * **Audio:** Soft tick `ui-tick-2` at cut (58700ms).
 * **7c: Grid (61.2s – 63.7s / 2500ms)**
   * **Shot ID:** `f821a2b6-7c08-4f1b-bf60-a2ad78f7963a`
-  * **Visual:** Split composition: Clean architectural vector Grid card (`d060d42d-68ff-4fd3-b8ae-0488b077501e.png`) on right (`x: -1.45, y: 0.70, scale: 0.28, y: 13°`); Label "Grid" on left (`x: -2.40, y: 0.70, size: 0.082, weight: 600`, left-aligned).
+  * **Visual:** Split composition: Pure official graphic artwork (`card_grid_clean.png`, asset `33d05184...`), **free of EMV chips, card numbers, or name imprints** (`x: -1.45, y: 0.70, scale: 0.26, y: 13°`); Label "Grid" on left (`x: -2.40, y: 0.70, size: 0.068, weight: 600`, left-aligned).
+  * **Transition:** Incoming deceleration from speed cut (0–400ms); steady hold (400–2100ms); outgoing acceleration into cut at 63700ms (`ratio: 1.8, curve: expo`).
   * **Audio:** Soft tick `ui-tick-3` at cut (61200ms).
 * **7d: Carbon (63.7s – 66.2s / 2500ms)**
   * **Shot ID:** `b3d34f52-7769-4fb1-9843-868836864f2b`
-  * **Visual:** Split composition: Matte weave Carbon card (`crop: height: 0.90` stripping stray shadow) on right (`x: -1.45, y: 0.70, scale: 0.28, y: -13°`); Label "Carbon" on left (`x: -2.40, y: 0.70, size: 0.082, weight: 600`, left-aligned).
+  * **Visual:** Split composition: **Pristine standalone single-card artwork** (`card_carbon_clean.png`, asset `246ba8fa...`) rendered from official `/images/cards/card-carbon.jpg` with authentic dot-matrix texture and center mark, **completely standalone (not cropped from the stack)** (`x: -1.45, y: 0.70, scale: 0.26, y: -13°`); Label "Carbon" on left (`x: -2.40, y: 0.70, size: 0.068, weight: 600`, left-aligned).
+  * **Transition:** Incoming deceleration from speed cut (0–400ms); steady hold (400–2100ms); outgoing acceleration into fan-out at 66200ms (`ratio: 1.8, curve: expo`).
   * **Audio:** Soft tick `ui-tick-4` at cut (63700ms).
 * **7e: Four Editions Fan-Out (66.2s – 70.7s / 4500ms)**
   * **Shot ID:** `bc4047df-006e-416a-ad65-f0443d8a1441`
-  * **Visual:** All 4 physical card editions dynamically fan out from center, perspective-tilted and staggered in Z (`z: -0.06, -0.02, +0.02, +0.06`, scale `0.155`). Positions pulled inward (`x: -2.48, -2.09, -1.71, -1.32`) to satisfy 6% safe margins.
+  * **Visual:** All 4 physical card editions (using clean standalone Grid and Carbon assets) dynamically fan out from center, perspective-tilted and staggered in Z (`z: -0.06, -0.02, +0.02, +0.06`, scale `0.155`). Positions strictly inside 6% safe margins (`x: -2.48, -2.09, -1.71, -1.32`).
+  * **Transition:** Incoming deceleration from speed cut (0–400ms) seamlessly resolving into the fan-out expansion.
   * **Typography:** Headline "Four editions. One standard." (`y: 0.30`); Subline "Lumen · Chrome · Grid · Carbon" (`y: 0.14`, `#c5cedb`).
   * **Audio:** Fan-out whoosh `whoosh-deep-cinematic-1` at 66200ms.
 
