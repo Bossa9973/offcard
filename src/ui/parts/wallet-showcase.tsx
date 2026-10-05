@@ -28,7 +28,7 @@ const ELEMENTAL_CARDS: (InspectorCardData & WalletCard)[] = [
 		product: "Grid",
 		variant: "grid",
 		image: "/images/cards/card-grid.jpg",
-		holder: "Alex Morgan",
+		holder: "NORTHWIND STUDIO LTD",
 		lastFour: "7474",
 		expires: "08/28",
 		materialSpec: "Precision Brushed Steel",
@@ -39,9 +39,9 @@ const ELEMENTAL_CARDS: (InspectorCardData & WalletCard)[] = [
 		balance: 5750.20,
 		balanceLabel: "Available balance",
 		transactions: [
-			{ id: "g1", merchant: "Adobe Creative Cloud", detail: "Subscription · Today", amount: -54.99 },
-			{ id: "g2", merchant: "AWS Infrastructure", detail: "Invoice #1182 · Yesterday", amount: -312.40 },
-			{ id: "g3", merchant: "Figma Organization", detail: "Subscription · 3 days ago", amount: -15.00 },
+			{ id: "g1", merchant: "Design software", detail: "Subscription · Today", amount: -54.99 },
+			{ id: "g2", merchant: "Cloud infrastructure", detail: "Monthly invoice · Yesterday", amount: -312.40 },
+			{ id: "g3", merchant: "Product prototyping", detail: "Subscription · 3 days ago", amount: -15.00 },
 		],
 	},
 	{
@@ -51,7 +51,7 @@ const ELEMENTAL_CARDS: (InspectorCardData & WalletCard)[] = [
 		product: "Chrome",
 		variant: "chrome",
 		image: "/images/cards/card-chrome.jpg",
-		holder: "Alex Morgan",
+		holder: "NORTHWIND STUDIO LTD",
 		lastFour: "2343",
 		expires: "12/29",
 		materialSpec: "Mirror-Polished Alloy",
@@ -62,9 +62,9 @@ const ELEMENTAL_CARDS: (InspectorCardData & WalletCard)[] = [
 		balance: 18450.00,
 		balanceLabel: "Current balance",
 		transactions: [
-			{ id: "c1", merchant: "Anthropic API", detail: "Usage · Today", amount: -88.32 },
-			{ id: "c2", merchant: "Vercel Enterprise", detail: "Monthly · 2 days ago", amount: -20.00 },
-			{ id: "c3", merchant: "Treasury Deposit", detail: "Deposit · 4 days ago", amount: +5000.00 },
+			{ id: "c1", merchant: "API compute", detail: "Usage · Today", amount: -88.32 },
+			{ id: "c2", merchant: "Application hosting", detail: "Monthly · 2 days ago", amount: -20.00 },
+			{ id: "c3", merchant: "Treasury deposit", detail: "Settlement · 4 days ago", amount: +5000.00 },
 		],
 	},
 	{
@@ -74,7 +74,7 @@ const ELEMENTAL_CARDS: (InspectorCardData & WalletCard)[] = [
 		product: "Carbon",
 		variant: "carbon",
 		image: "/images/cards/card-carbon.jpg",
-		holder: "Alex Morgan",
+		holder: "NORTHWIND STUDIO LTD",
 		lastFour: "9613",
 		expires: "06/27",
 		materialSpec: "Matte Black Ceramic-Coat",
@@ -85,8 +85,8 @@ const ELEMENTAL_CARDS: (InspectorCardData & WalletCard)[] = [
 		balance: 31200.00,
 		balanceLabel: "Settlement reserve",
 		transactions: [
-			{ id: "k1", merchant: "Four Seasons Hotel", detail: "Travel & Expense · Today", amount: -1240.00 },
-			{ id: "k2", merchant: "Operating Transfer", detail: "Treasury · Yesterday", amount: +15000.00 },
+			{ id: "k1", merchant: "Executive lodging", detail: "Travel & expense · Today", amount: -1240.00 },
+			{ id: "k2", merchant: "Operating transfer", detail: "Treasury · Yesterday", amount: +15000.00 },
 		],
 	},
 	{
@@ -96,20 +96,20 @@ const ELEMENTAL_CARDS: (InspectorCardData & WalletCard)[] = [
 		product: "Lumen",
 		variant: "lumen",
 		image: "/images/cards/card-lumen.jpg",
-		holder: "Alex Morgan",
+		holder: "NORTHWIND STUDIO LTD",
 		lastFour: "0917",
 		expires: "03/28",
 		materialSpec: "Dual-Tone Anodized Aluminum",
 		massGrams: 12.2,
 		thicknessMm: 0.84,
 		finish: "Bead-blasted dual spectrum linear texture",
-		useCase: "Everyday employee expense & SaaS subscriptions",
+		useCase: "Everyday employee expense & software subscriptions",
 		balance: 2380.50,
 		balanceLabel: "Spent this month",
 		transactions: [
-			{ id: "l1", merchant: "Google Workspace", detail: "Seats · Today", amount: -72.00 },
-			{ id: "l2", merchant: "Slack Technologies", detail: "Annual plan · Yesterday", amount: -240.00 },
-			{ id: "l3", merchant: "GitHub Copilot", detail: "Team licenses · 3 days ago", amount: -190.00 },
+			{ id: "l1", merchant: "Workspace suite", detail: "Seats · Today", amount: -72.00 },
+			{ id: "l2", merchant: "Team communications", detail: "Annual plan · Yesterday", amount: -240.00 },
+			{ id: "l3", merchant: "Code assistant licenses", detail: "Team licenses · 3 days ago", amount: -190.00 },
 		],
 	},
 ];
@@ -148,6 +148,7 @@ export function WalletShowcase({
 	return (
 		<section
 			id="card-designs"
+			data-band="dark"
 			className="off-band off-band--dark card-studio-band"
 			aria-labelledby="card-studio-title"
 		>
@@ -179,7 +180,6 @@ export function WalletShowcase({
 								onClick={() => handleTabSelect(i)}
 							>
 								<span className="card-studio-tab-name">{card.product}</span>
-								<span className="card-studio-tab-spec">{card.massGrams}g · {card.materialSpec.split(",")[0]}</span>
 							</button>
 						);
 					})}
@@ -200,11 +200,9 @@ export function WalletShowcase({
 							className="card-studio-inspector"
 						/>
 
-						{/* Physical specification readout */}
+						{/* Physical specification readout - confirmed specifications */}
 						<div className="card-studio-specs">
 							<SpecRow label="Material" value={activeCard.materialSpec} />
-							<SpecRow label="Mass" value={`${activeCard.massGrams}g`} />
-							<SpecRow label="Thickness" value={`${activeCard.thicknessMm}mm`} />
 							<SpecRow label="Finish" value={activeCard.finish} />
 							<SpecRow label="Primary use" value={activeCard.useCase} />
 						</div>
@@ -220,7 +218,6 @@ export function WalletShowcase({
 
 					{/* ── RIGHT: Wallet Stack ── */}
 					<div className="card-studio-stack-col">
-						<p className="card-studio-stack-label">Treasury Wallet Stack</p>
 						<WalletStack
 							cards={ELEMENTAL_CARDS}
 							label="Card editions"

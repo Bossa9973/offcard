@@ -55,11 +55,17 @@ export function HalftoneField({ variant = "hero", pitch = 22, className = "" }: 
 
 		const mask = (nx: number, ny: number) => {
 			if (variant === "hero") {
-				const horiz = smooth(clamp01((nx - 0.38) / 0.5));
-				const vert = 1 - smooth(clamp01((ny - 0.7) / 0.3));
-				return horiz * vert;
+				// Mask away from the central headline zone (centered at nx = 0.5, ny = 0.22)
+				const dx = (nx - 0.5) / 0.38;
+				const dy = (ny - 0.22) / 0.16;
+				const distToCenter = Math.hypot(dx, dy);
+				// 0 inside headline zone, smoothly rising to 1 outside it
+				const headlineHole = smooth(clamp01((distToCenter - 0.5) / 0.5));
+				// Vertical bounds: visible throughout hero
+				const vert = 1 - smooth(clamp01((ny - 0.85) / 0.15));
+				return headlineHole * vert;
 			}
-			return smooth(clamp01((nx - 0.6) / 0.4));
+			return smooth(clamp01((nx - 0.55) / 0.45));
 		};
 
 		const draw = (now: number) => {
@@ -81,8 +87,8 @@ export function HalftoneField({ variant = "hero", pitch = 22, className = "" }: 
 					const dy = y - pointer.y;
 					const d = Math.hypot(dx, dy);
 					if (d < 150) level = Math.min(1, level + smooth(1 - d / 150) * 0.5);
-					const r = 0.5 + level * 1.5;
-					ctx.fillStyle = `rgba(154,154,160,${(0.12 + level * 0.38).toFixed(3)})`;
+					const r = 0.6 + level * 1.8;
+					ctx.fillStyle = `rgba(175,178,195,${(0.14 + level * 0.42).toFixed(3)})`;
 					ctx.beginPath();
 					ctx.arc(x, y, r, 0, Math.PI * 2);
 					ctx.fill();

@@ -375,6 +375,14 @@ export function WalletStack({
 
 	const selectedCard = selectedId ? (cards.find((c) => c.id === selectedId) ?? null) : null;
 
+	// Reset any open card overlay when controlled activeIndex changes (e.g. tab switch)
+	useEffect(() => {
+		if (activeIndex !== undefined) {
+			setSelectedId(null);
+			onSelectedChange?.(null);
+		}
+	}, [activeIndex, onSelectedChange]);
+
 	// Count-up on open
 	useEffect(() => {
 		if (!selectedCard) { setCountUp(0); return; }

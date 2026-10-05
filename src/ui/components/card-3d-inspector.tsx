@@ -14,10 +14,11 @@
 import {
 	type PointerEvent as ReactPointerEvent,
 	useCallback,
+	useEffect,
 	useRef,
 	useState,
 } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, type Variants } from "motion/react";
 import { Wordmark } from "./wordmark";
 import { MastercardLogo } from "./mastercard-logo";
 
@@ -114,20 +115,16 @@ function CardFront({
 		<div
 			className={`card3d-face card3d-face--front card3d-face--${card.variant}`}
 		>
-			{/* All 4 brand artworks pre-rendered and stacked for instant zero-lag GPU crossfade */}
-			{ALL_EDITION_ARTWORKS.map((item) => (
-				<div
-					key={item.id}
-					className="card3d-artwork"
-					style={{
-						backgroundImage: `url(${item.image})`,
-						opacity: item.id === card.id ? 1 : 0,
-						transition: "opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1)",
-						pointerEvents: "none",
-					}}
-					aria-hidden="true"
-				/>
-			))}
+			{/* Brand artwork for active edition */}
+			<div
+				className="card3d-artwork"
+				style={{
+					backgroundImage: `url(${card.image})`,
+					opacity: 1,
+					pointerEvents: "none",
+				}}
+				aria-hidden="true"
+			/>
 
 			{/* Dark overlay for legibility */}
 			<div
@@ -202,20 +199,16 @@ function CardFront({
 function CardBack({ card }: { card: InspectorCardData }) {
 	return (
 		<div className={`card3d-face card3d-face--back card3d-face--${card.variant}`}>
-			{/* All 4 artworks stacked for instant GPU crossfade on back too */}
-			{ALL_EDITION_ARTWORKS.map((item) => (
-				<div
-					key={item.id}
-					className="card3d-artwork card3d-artwork--back"
-					style={{
-						backgroundImage: `url(${item.image})`,
-						opacity: item.id === card.id ? 1 : 0,
-						transition: "opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1)",
-						pointerEvents: "none",
-					}}
-					aria-hidden="true"
-				/>
-			))}
+			{/* Brand artwork for active edition on back */}
+			<div
+				className="card3d-artwork card3d-artwork--back"
+				style={{
+					backgroundImage: `url(${card.image})`,
+					opacity: 1,
+					pointerEvents: "none",
+				}}
+				aria-hidden="true"
+			/>
 			<div className="card3d-overlay" style={{ background: VARIANT_OVERLAY[card.variant] }} />
 			<div className="card3d-rim" />
 
@@ -289,17 +282,58 @@ function FlipButton({ isBack, onClick }: { isBack: boolean; onClick: () => void 
 	);
 }
 
+const CARD_TRANSITION_VARIANTS: Variants = {
+	initial: { opacity: 0, y: -10 },
+	animate: {
+		opacity: 1,
+		y: 0,
+		transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] as const },
+	},
+	exit: {
+		opacity: 0,
+		y: 10,
+		transition: { duration: 0.18, ease: "easeIn" },
+	},
+};
+
 // ─── Card3DInspector root ─────────────────────────────────────────────────────
 
 export function Card3DInspector({ card, onFlip, className = "" }: Card3DInspectorProps) {
 	const [isFlipped, setIsFlipped] = useState(false);
 	const [isHovered, setIsHovered] = useState(false);
+	const [isTransitioning, setIsTransitioning] = useState(false);
 	const cardRef = useRef<HTMLDivElement>(null);
 	const rafRef = useRef<number>(0);
 
+	// Preload all 4 edition textures on idle
+	useEffect(() => {
+		const preload = () => {
+			ALL_EDITION_ARTWORKS.forEach((item) => {
+				const img = new Image();
+				img.src = item.image;
+			});
+		};
+		if (typeof window !== "undefined") {
+			if ("requestIdleCallback" in window) {
+				(window as unknown as { requestIdleCallback: (cb: () => void) => void }).requestIdleCallback(preload);
+			} else {
+				setTimeout(preload, 150);
+			}
+		}
+	}, []);
+
+	// Reset flip state cleanly when card edition changes
+	useEffect(() => {
+		setIsFlipped(false);
+		const el = cardRef.current;
+		if (el) {
+			el.style.transform = "perspective(1200px) rotateX(0deg) rotateY(0deg)";
+		}
+	}, [card.id]);
+
 	const handlePointerMove = useCallback((e: ReactPointerEvent<HTMLDivElement>) => {
 		const el = cardRef.current;
-		if (!el || isFlipped) return;
+		if (!el || isFlipped || isTransitioning) return;
 		const rect = el.getBoundingClientRect();
 		const nx = (e.clientX - rect.left) / rect.width;
 		const ny = (e.clientY - rect.top) / rect.height;
@@ -314,7 +348,7 @@ export function Card3DInspector({ card, onFlip, className = "" }: Card3DInspecto
 			el.style.setProperty("--card3d-glare-x", `${(nx * 100).toFixed(1)}%`);
 			el.style.setProperty("--card3d-glare-y", `${(ny * 100).toFixed(1)}%`);
 		});
-	}, [isFlipped]);
+	}, [isFlipped, isTransitioning]);
 
 	const handlePointerLeave = useCallback(() => {
 		setIsHovered(false);
@@ -331,11 +365,12 @@ export function Card3DInspector({ card, onFlip, className = "" }: Card3DInspecto
 	}, [isFlipped]);
 
 	const handleFlip = useCallback(() => {
+		if (isTransitioning) return;
 		const next = !isFlipped;
 		setIsFlipped(next);
 		const el = cardRef.current;
 		if (el) {
-			// Buttery-smooth, luxurious easing with natural inertia (no snappy snap)
+			// Buttery-smooth, luxurious easing with natural inertia
 			el.style.transition = "transform 0.88s cubic-bezier(0.22, 1, 0.36, 1)";
 			el.style.transform = next
 				? "perspective(1200px) rotateX(0deg) rotateY(180deg)"
@@ -345,7 +380,7 @@ export function Card3DInspector({ card, onFlip, className = "" }: Card3DInspecto
 			}, 880);
 		}
 		onFlip?.(next);
-	}, [isFlipped, onFlip]);
+	}, [isFlipped, isTransitioning, onFlip]);
 
 	return (
 		<div className={`card3d-root ${className}`}>
@@ -362,18 +397,36 @@ export function Card3DInspector({ card, onFlip, className = "" }: Card3DInspecto
 						transform: isFlipped
 							? "perspective(1200px) rotateX(0deg) rotateY(180deg)"
 							: "perspective(1200px) rotateX(0deg) rotateY(0deg)",
+						pointerEvents: isTransitioning ? "none" : "auto",
 					}}
 					onPointerMove={handlePointerMove}
 					onPointerLeave={handlePointerLeave}
-					onPointerEnter={() => !isFlipped && setIsHovered(true)}
+					onPointerEnter={() => !isFlipped && !isTransitioning && setIsHovered(true)}
 					onClick={handleFlip}
 					role="button"
 					tabIndex={0}
 					aria-label={`Off-Card ${card.product} — click to ${isFlipped ? "show front" : "flip to back"}`}
 					onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handleFlip(); } }}
 				>
-					<CardFront card={card} isHovered={isHovered} />
-					<CardBack card={card} />
+					<AnimatePresence mode="wait" initial={false}>
+						<motion.div
+							key={card.id}
+							variants={CARD_TRANSITION_VARIANTS}
+							initial="initial"
+							animate="animate"
+							exit="exit"
+							onAnimationStart={() => setIsTransitioning(true)}
+							onAnimationComplete={() => setIsTransitioning(false)}
+							style={{
+								position: "absolute",
+								inset: 0,
+								transformStyle: "preserve-3d",
+							}}
+						>
+							<CardFront card={card} isHovered={isHovered} />
+							<CardBack card={card} />
+						</motion.div>
+					</AnimatePresence>
 				</div>
 
 				{/* Flip button */}

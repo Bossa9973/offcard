@@ -8,3 +8,12 @@
 @import './ui/revolut-theme.css';
 
 @source '.';
+
+/* Pass 6 Section 1.1: Anchor target scroll offset */
+#hero,
+#features,
+#card-designs,
+#pricing,
+#faq {
+	scroll-margin-top: 96px;
+}

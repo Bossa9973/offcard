@@ -12,6 +12,8 @@ import { AssetsTicker } from "../components/assets-ticker";
 import { useTileSpotlight } from "../hooks/use-tile-spotlight";
 import { useScrollCraft } from "../hooks/use-scroll-craft";
 import { WalletShowcase } from "./wallet-showcase";
+import { OffcardFloatingNav } from "./offcard-floating-nav";
+import { OffcardHeroDrop } from "./offcard-hero-drop";
 import {
 	ASSETS_TILE_META,
 	SETTLEMENT_DEMO,
@@ -43,6 +45,7 @@ export function SignIn({
 	const [scrolled, setScrolled] = useState(false);
 	const [activeSection, setActiveSection] = useState<string>("features");
 	const [billingPeriod, setBillingPeriod] = useState<"monthly" | "annual">("monthly");
+	const [showGridOverlay, setShowGridOverlay] = useState(false);
 
 	// Desktop tile cursor spotlight (Pass 5, Section 4.7)
 	useTileSpotlight(pageRef);
@@ -50,8 +53,15 @@ export function SignIn({
 	// Scroll-Craft timeline, 3D card fanning, horizon wipe & kinetic reveals
 	useScrollCraft(pageRef);
 
-	// Navigation scroll compaction & active section tracking
+	// Navigation scroll compaction & active section tracking + dev grid query
 	useEffect(() => {
+		if (typeof window !== "undefined") {
+			const params = new URLSearchParams(window.location.search);
+			if (params.get("grid") === "1") {
+				setShowGridOverlay(true);
+			}
+		}
+
 		const onScroll = () => {
 			setScrolled(window.scrollY > 24);
 		};
@@ -102,158 +112,54 @@ export function SignIn({
 
 	return (
 		<div ref={pageRef} className="off-page">
+			{/* Dev-only 12-column grid overlay (?grid=1) */}
+			{showGridOverlay && (
+				<div
+					className="pointer-events-none fixed inset-0 z-[9999] flex justify-center"
+					aria-hidden="true"
+				>
+					<div
+						className="w-full h-full max-w-[1168px] px-6 grid grid-cols-12 gap-6"
+						style={{ boxSizing: "border-box" }}
+					>
+						{Array.from({ length: 12 }).map((_, i) => (
+							<div
+								key={i}
+								className="h-full bg-red-500/[0.04] border-x border-red-500/[0.12]"
+							/>
+						))}
+					</div>
+				</div>
+			)}
+
 			{/* Accessibility Skip link */}
 			<a href="#main-content" className="off-skip-link">
 				Skip to main content
 			</a>
 
-			{/* =================================================================
-			    7.1 Nav (Clean Sticky Navigation Bar)
-			    ================================================================= */}
-			<header className={`off-nav-sticky ${scrolled ? "off-nav-sticky--scrolled" : ""}`}>
-				<div className="off-nav-container">
-					<a href="/" className="off-brand-link" aria-label="Off-Card Home" data-keep-clear="nav-brand">
-						<Wordmark variant="dark" size="md" />
-					</a>
-
-					<nav className="off-nav-links" aria-label="Primary navigation">
-						<a
-							href="#features"
-							className={`off-nav-link ${activeSection === "features" ? "off-nav-link--active" : ""}`}
-						>
-							Features
-						</a>
-						<a
-							href="#card-designs"
-							className={`off-nav-link ${activeSection === "card-designs" ? "off-nav-link--active" : ""}`}
-						>
-							Cards
-						</a>
-						<a
-							href="#pricing"
-							className={`off-nav-link ${activeSection === "pricing" ? "off-nav-link--active" : ""}`}
-						>
-							Pricing
-						</a>
-						<a
-							href="#faq"
-							className={`off-nav-link ${activeSection === "faq" ? "off-nav-link--active" : ""}`}
-						>
-							FAQ
-						</a>
-					</nav>
-
-					<div className="off-nav-actions">
-						<Button
-							variant="primary"
-							size="sm"
-							href={onAction ? undefined : href}
-							onClick={onAction}
-						>
-							Open account
-						</Button>
-					</div>
-				</div>
-			</header>
+			{/* OffCard Floating Pill Header (Custom twist) */}
+			<OffcardFloatingNav onAction={onAction} href={href} />
 
 			<main id="main-content">
-				{/* =================================================================
-				    Hero Section
-				    - Value-noise halftone field
-				    - Masked headline assembly
-				    - 3D physical hero card stack
-				    - Credible performance benchmarks
-				    ================================================================= */}
-				<section id="hero" className="off-band off-band--dark off-hero-band" aria-label="Introduction">
-					{/* Living value-noise halftone field */}
-					<HalftoneField variant="hero" pitch={22} className="off-hero-halftone" />
+				{/* Section Job: Say what it is and who it is for; one action */}
+				<OffcardHeroDrop onAction={onAction} href={href} />
 
-					<div className="off-container" style={{ position: "relative", zIndex: 2 }}>
-						<div className="off-hero-grid">
-							{/* Left Column (6 cols): Kinetic masked headline & crypto copy */}
-							<div className="off-hero-content" data-keep-clear="hero-text">
-								<h1 className="off-hero-h1">
-									<span className="off-hero-line-mask">
-										<span className="off-hero-line off-hero-line--1">Spend crypto</span>
-									</span>
-									<span className="off-hero-line-mask">
-										<span className="off-hero-line off-hero-line--2">like cash</span>
-									</span>
-								</h1>
-
-								<p className="off-hero-lead">
-									Issue cards your team can use anywhere, funded from your crypto balance. Set limits, track every payment, and export clean records.
-								</p>
-
-								<div className="off-hero-ctas">
-									<div data-sc-magnet="0.22" style={{ display: "inline-block" }}>
-										<Button
-											variant="primary"
-											size="md"
-											icon={true}
-											href={onAction ? undefined : href}
-											onClick={onAction}
-										>
-											Open account
-										</Button>
-									</div>
-									<Button
-										variant="outline-dark"
-										size="md"
-										href="#features"
-									>
-										How it works
-									</Button>
-								</div>
-							</div>
-
-							{/* Right Column (6 cols): 3D Physical Hero Card Stack */}
-							<div className="off-hero-visual">
-								<HeroCardStack />
-							</div>
-						</div>
-
-						{/* Dual-Column Stat Tile with CountUp */}
-						<div className="off-stat-tile-combined" data-keep-clear="hero-stat-tile">
-							<div className="off-stat-col">
-								<div className="off-stat-num">
-									<CountUp to={30} suffix="s" />
-									<sup className="off-stat-fn" aria-label="Footnote 1">1</sup>
-								</div>
-								<p className="off-stat-copy">
-									{PRODUCT_FACTS.cardIssuanceSpeed.copy}
-								</p>
-							</div>
-							<div className="off-stat-col">
-								<div className="off-stat-num">
-									<CountUp to={100} suffix="%" />
-									<sup className="off-stat-fn" aria-label="Footnote 2">2</sup>
-								</div>
-								<p className="off-stat-copy">
-									{PRODUCT_FACTS.fxMarkup.copy}
-								</p>
-							</div>
-						</div>
-
-						{/* Stat Footnotes */}
-						<div className="off-stat-footnotes">
-							<span><sup>1</sup> Business identity verification required prior to issuance.</span>
-							<span><sup>2</sup> Direct real-time debit against selected treasury balances at authorization.</span>
-						</div>
+				{error && (
+					<div className="off-container" style={{ padding: "16px 0" }}>
+						<p className="off-auth-error">{error}</p>
 					</div>
-
-					{error && <p className="off-auth-error">{error}</p>}
-					{meta && <p className="off-auth-meta">{meta}</p>}
-				</section>
+				)}
+				{meta && (
+					<div className="off-container" style={{ padding: "16px 0" }}>
+						<p className="off-auth-meta">{meta}</p>
+					</div>
+				)}
 
 				{/* =================================================================
-				    Features Bento Grid
-				    - Cards in under 30s
-				    - Supported assets ticker
-				    - Accounting records
-				    - Treasury settlement timeline
+				    Section Job: Prove the three or four capabilities that matter
+				    Features Bento Grid (Archetype B: Split)
 				    ================================================================= */}
-				<section id="features" className="off-band off-band--dark off-bento-band" aria-labelledby="features-title">
+				<section id="features" data-band="dark" className="off-band off-band--dark off-bento-band" aria-labelledby="features-title">
 					<div className="off-container">
 						{/* Single Merged Header: Heading left (7 cols), Paragraph right (5 cols) */}
 						<div className="off-bento-header" data-keep-clear="features-header">
@@ -387,7 +293,8 @@ export function SignIn({
 				</section>
 
 				{/* =================================================================
-				    Card Designs WalletStack Showcase
+				    Section Job: Let the buyer choose a physical card
+				    Card Designs WalletStack Showcase (Archetype B: Split)
 				    ================================================================= */}
 				<WalletShowcase onAction={onAction} href={href} />
 
@@ -399,13 +306,14 @@ export function SignIn({
 				</div>
 
 				{/* =================================================================
-				    Pricing Section
+				    Section Job: Make the cost unambiguous
+				    Pricing Section (Archetype C: Reference)
 				    ================================================================= */}
-				<section id="pricing" className="off-band off-band--light off-pricing-band" aria-labelledby="pricing-title">
+				<section id="pricing" data-band="light" className="off-band off-band--light off-pricing-band" aria-labelledby="pricing-title">
 					<div className="off-container">
 						<div className="off-section-header" data-keep-clear="pricing-header">
 							<h2 id="pricing-title" className="off-section-h2">
-								Simple pricing. No hidden spreads
+								Transparent card pricing and fee schedule
 							</h2>
 							<p className="off-section-sub">
 								Start free. Upgrade when you need more cards, multi-asset spending, or programmatic API access.
@@ -459,7 +367,7 @@ export function SignIn({
 										<div className="off-plan-top">
 											<h3 className="off-plan-name">{plan.name}</h3>
 											<div className="off-plan-price">
-												<CountUp to={priceNum} prefix="$" />
+												<CountUp to={priceNum} duration={400} prefix="$" />
 												<span className="off-plan-period">{periodText}</span>
 											</div>
 											<p className="off-plan-desc">{plan.description}</p>
@@ -506,17 +414,92 @@ export function SignIn({
 						</div>
 
 						<p className="off-pricing-footnote">
-							All plans include virtual card issuance and instant crypto funding. See pricing terms.
+							All plans include virtual card issuance and instant crypto funding. Annual plans billed annually. See pricing terms.
 						</p>
 					</div>
 				</section>
 
 				{/* =================================================================
-				    FAQ Section
-				    - Two-column layout with sticky sidebar
-				    - Accessible accordion answers
+				    Section Job: Provide clear, verifiable network specifications and settlement terms
+				    Supported Assets & Networks Table (Archetype C: Reference)
 				    ================================================================= */}
-				<section id="faq" className="off-band off-band--light off-faq-band" aria-labelledby="faq-title">
+				<section id="assets" data-band="light" className="off-band off-band--light pt-0 pb-16" aria-labelledby="assets-table-title">
+					<div className="off-container">
+						<div className="mb-6">
+							<h3 id="assets-table-title" className="text-xl sm:text-2xl font-medium text-black font-display tracking-tight">
+								Supported assets and settlement specifications
+							</h3>
+							<p className="text-sm text-black/60 mt-1 font-body">
+								Fund your card balance directly from verified digital asset networks without third-party exchange markup.
+							</p>
+						</div>
+
+						<div className="overflow-x-auto border border-black/10 rounded-2xl bg-white shadow-sm">
+							<table className="w-full text-left text-sm font-body border-collapse">
+								<thead>
+									<tr className="border-b border-black/10 bg-black/[0.02] text-xs font-medium text-black/60 font-display">
+										<th className="py-3 px-4">Asset</th>
+										<th className="py-3 px-4">Networks</th>
+										<th className="py-3 px-4">Settlement finality</th>
+										<th className="py-3 px-4">Minimum funding</th>
+										<th className="py-3 px-4 text-right">Card fee</th>
+									</tr>
+								</thead>
+								<tbody className="divide-y divide-black/5 text-black/80 text-xs sm:text-sm">
+									<tr>
+										<td className="py-3 px-4 font-medium text-black">
+											<span className="font-mono text-xs px-2 py-0.5 rounded bg-black/5 text-black font-semibold mr-2">SOL</span>
+											Solana
+										</td>
+										<td className="py-3 px-4 text-black/70">Solana Mainnet</td>
+										<td className="py-3 px-4 text-black/70">Instant (~400 ms)</td>
+										<td className="py-3 px-4 font-mono text-black/70">0.10 SOL</td>
+										<td className="py-3 px-4 text-right font-medium text-black">0%</td>
+									</tr>
+									<tr>
+										<td className="py-3 px-4 font-medium text-black">
+											<span className="font-mono text-xs px-2 py-0.5 rounded bg-black/5 text-black font-semibold mr-2">USDC</span>
+											USD Coin
+										</td>
+										<td className="py-3 px-4 text-black/70">Solana, Ethereum, Polygon</td>
+										<td className="py-3 px-4 text-black/70">1–15 seconds</td>
+										<td className="py-3 px-4 font-mono text-black/70">$10.00 USDC</td>
+										<td className="py-3 px-4 text-right font-medium text-black">0%</td>
+									</tr>
+									<tr>
+										<td className="py-3 px-4 font-medium text-black">
+											<span className="font-mono text-xs px-2 py-0.5 rounded bg-black/5 text-black font-semibold mr-2">ETH</span>
+											Ether
+										</td>
+										<td className="py-3 px-4 text-black/70">Ethereum, Arbitrum, Base</td>
+										<td className="py-3 px-4 text-black/70">~12 seconds</td>
+										<td className="py-3 px-4 font-mono text-black/70">0.01 ETH</td>
+										<td className="py-3 px-4 text-right font-medium text-black">0%</td>
+									</tr>
+									<tr>
+										<td className="py-3 px-4 font-medium text-black">
+											<span className="font-mono text-xs px-2 py-0.5 rounded bg-black/5 text-black font-semibold mr-2">BTC</span>
+											Bitcoin
+										</td>
+										<td className="py-3 px-4 text-black/70">Bitcoin Mainnet, Lightning</td>
+										<td className="py-3 px-4 text-black/70">Instant to 10 min</td>
+										<td className="py-3 px-4 font-mono text-black/70">0.0005 BTC</td>
+										<td className="py-3 px-4 text-right font-medium text-black">0%</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<p className="text-[12px] text-black/40 mt-3 font-body">
+							Conversion occurs at transaction authorization against spot rate. Blockchain network transaction fees apply on initial balance deposit.
+						</p>
+					</div>
+				</section>
+
+				{/* =================================================================
+				    Section Job: Remove the last objections (custody, fees, limits)
+				    FAQ Section (Archetype C: Reference)
+				    ================================================================= */}
+				<section id="faq" data-band="light" className="off-band off-band--light off-faq-band" aria-labelledby="faq-title">
 					<div className="off-container">
 						<div className="off-faq-grid">
 							{/* Left Column (Sticky heading + contact) */}
@@ -559,11 +542,10 @@ export function SignIn({
 				</div>
 
 				{/* =================================================================
-				    Closing CTA Section
-				    - Fast onboarding call to action
-				    - Halftone accent panel
+				    Section Job: Repeat the one action
+				    Closing CTA Section (Archetype A: Statement)
 				    ================================================================= */}
-				<section className="off-band off-band--dark off-cta-band" aria-labelledby="cta-title">
+				<section data-band="dark" className="off-band off-band--dark off-cta-band" aria-labelledby="cta-title">
 					<div className="off-container">
 						<div className="off-cta-card">
 							<div className="off-cta-content" data-keep-clear="cta-content">
@@ -586,9 +568,19 @@ export function SignIn({
 								</div>
 							</div>
 
-							{/* Living HalftoneField panel variant (right 40% only) */}
-							<div className="off-cta-dots-wrap" aria-hidden="true">
-								<HalftoneField variant="panel" pitch={20} />
+							{/* Living HalftoneField panel variant + Lumen card crop */}
+							<div className="off-cta-visual-wrap" aria-hidden="true">
+								<div className="off-cta-lumen-crop">
+									<img
+										src="/images/cards/card-lumen.jpg"
+										alt=""
+										className="off-cta-lumen-img"
+									/>
+									<div className="off-cta-lumen-sheen" />
+								</div>
+								<div className="off-cta-dots-wrap">
+									<HalftoneField variant="panel" pitch={20} />
+								</div>
 							</div>
 						</div>
 					</div>

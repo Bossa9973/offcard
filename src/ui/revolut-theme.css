@@ -2434,15 +2434,54 @@ html, body {
 	text-wrap: pretty;
 }
 
+.off-cta-visual-wrap {
+	position: absolute;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	width: 44%;
+	pointer-events: none;
+	overflow: hidden;
+}
+
+.off-cta-lumen-crop {
+	position: absolute;
+	right: -30px;
+	bottom: -45px;
+	width: clamp(260px, 28vw, 360px);
+	aspect-ratio: 1.586 / 1;
+	border-radius: 16px;
+	overflow: hidden;
+	transform: rotate(-7deg) perspective(1000px) rotateX(10deg);
+	box-shadow: 0 24px 60px -10px rgba(0, 0, 0, 0.90), 0 0 0 1px rgba(255, 255, 255, 0.12);
+	opacity: 0.88;
+	z-index: 1;
+}
+
+.off-cta-lumen-img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+.off-cta-lumen-sheen {
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, transparent 60%);
+	pointer-events: none;
+}
+
 .off-cta-dots-wrap {
 	position: absolute;
 	right: 0;
 	top: 0;
 	bottom: 0;
-	width: 38%;
+	width: 100%;
 	pointer-events: none;
-	-webkit-mask-image: linear-gradient(to left, #000 0%, transparent 85%);
-	mask-image: linear-gradient(to left, #000 0%, transparent 85%);
+	-webkit-mask-image: linear-gradient(to left, #000 15%, transparent 85%);
+	mask-image: linear-gradient(to left, #000 15%, transparent 85%);
+	z-index: 2;
 }
 
 /* ==========================================================================
@@ -2975,8 +3014,8 @@ html, body {
 }
 
 .off-billing-discount {
-	background: rgba(0, 168, 126, 0.14);
-	color: #007a5b;
+	background: rgba(0, 135, 90, 0.12);
+	color: #005a3c;
 	font-size: 11px;
 	font-weight: 700;
 	padding: 2px 7px;
@@ -3141,11 +3180,21 @@ html, body {
 	overflow: hidden;
 	backface-visibility: hidden;
 	-webkit-backface-visibility: hidden;
+	transform-style: preserve-3d;
 	display: flex;
 	flex-direction: column;
 	font-family: var(--font-display, 'Space Grotesk', sans-serif);
 	color: rgba(255,255,255,0.92);
 	user-select: none;
+}
+
+.card3d-face * {
+	backface-visibility: hidden;
+	-webkit-backface-visibility: hidden;
+}
+
+.card3d-face--front {
+	transform: rotateY(0deg);
 }
 
 .card3d-face--back {
@@ -3158,10 +3207,13 @@ html, body {
 	background-size: cover;
 	background-position: center;
 	background-repeat: no-repeat;
+	backface-visibility: hidden;
+	-webkit-backface-visibility: hidden;
 }
 
 .card3d-artwork--back {
-	transform: scaleX(-1);
+	backface-visibility: hidden;
+	-webkit-backface-visibility: hidden;
 }
 
 .card3d-overlay {
@@ -3169,6 +3221,8 @@ html, body {
 	inset: 0;
 	pointer-events: none;
 	z-index: 1;
+	backface-visibility: hidden;
+	-webkit-backface-visibility: hidden;
 }
 
 .card3d-glare {
@@ -3176,14 +3230,15 @@ html, body {
 	inset: 0;
 	background: radial-gradient(
 		ellipse 50% 40% at var(--card3d-glare-x, 50%) var(--card3d-glare-y, 40%),
-		rgba(255,255,255,0.28) 0%,
-		rgba(255,255,255,0.08) 35%,
+		rgba(255,255,255,0.22) 0%,
+		rgba(255,255,255,0.06) 35%,
 		transparent 68%
 	);
 	pointer-events: none;
-	mix-blend-mode: screen;
 	transition: opacity 0.2s ease;
 	z-index: 2;
+	backface-visibility: hidden;
+	-webkit-backface-visibility: hidden;
 }
 
 .card3d-sheen {
@@ -3573,27 +3628,28 @@ html, body {
 .card-studio-spec-row {
 	display: flex;
 	justify-content: space-between;
-	align-items: baseline;
+	align-items: center;
+	height: 44px;
 	gap: 1rem;
-	padding: 0.65rem 1.1rem;
-	border-bottom: 1px solid rgba(255,255,255,0.05);
+	padding: 0 1.25rem;
+	border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 
 .card-studio-spec-row:last-child { border-bottom: none; }
 
 .card-studio-spec-label {
-	font-size: 0.68rem;
+	font-size: 12px;
 	font-weight: 500;
-	color: rgba(255,255,255,0.38);
-	letter-spacing: 0.04em;
+	color: var(--on-dark-mute, rgba(255,255,255,0.6));
+	letter-spacing: 0.05em;
 	text-transform: uppercase;
 	flex-shrink: 0;
 }
 
 .card-studio-spec-value {
-	font-size: 0.74rem;
+	font-size: 14px;
 	font-weight: 500;
-	color: rgba(255,255,255,0.80);
+	color: var(--on-dark, rgba(255,255,255,0.92));
 	text-align: right;
 	letter-spacing: -0.01em;
 }
@@ -3637,9 +3693,9 @@ html, body {
 }
 
 .card-studio-stack-label {
-	font-size: 0.68rem;
+	font-size: 12px;
 	font-weight: 500;
-	color: rgba(255,255,255,0.36);
+	color: var(--on-dark-mute, rgba(255,255,255,0.6));
 	letter-spacing: 0.05em;
 	text-transform: uppercase;
 	margin: 0;

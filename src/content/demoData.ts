@@ -1,8 +1,8 @@
 // DEMO DATA: Centralized demo fixtures for Off-Card crypto card product
 // All figures, balances, and identifiers below are demonstration fixtures.
 
-export const DEMO_CARDHOLDER = "ALEX MORGAN";
-export const DEMO_COMPANY = "ACME LABS";
+export const DEMO_CARDHOLDER = "NORTHWIND STUDIO LTD";
+export const DEMO_COMPANY = "NORTHWIND STUDIO LTD";
 
 export interface DemoCardData {
 	balance: string;
@@ -173,7 +173,7 @@ export const PRICING_PLANS = [
 		name: "Starter",
 		price: "$0",
 		period: "/month",
-		description: "For web3 teams and founders getting started.",
+		description: "For distributed teams and founders getting started.",
 		features: [
 			"Up to 5 virtual crypto debit cards",
 			"Instant USDC & USDT funding",

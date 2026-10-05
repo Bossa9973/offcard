@@ -37,10 +37,10 @@
 }
 
 .ws-header-label {
-  font-size: 0.72rem;
+  font-size: 12px;
   font-weight: 500;
-  letter-spacing: 0.04em;
-  color: rgba(255, 255, 255, 0.40);
+  letter-spacing: 0.05em;
+  color: var(--on-dark-mute, rgba(255, 255, 255, 0.60));
   text-transform: uppercase;
 }
 

@@ -15,8 +15,30 @@ export interface ProductFactItem {
 }
 
 export const PRODUCT_FACTS = {
+	// Brand naming standards (Pass 6 Section 1.4)
+	brand: {
+		name: "Off-Card", // Running text
+		lockup: "off-card", // Lowercase logo with hyphen
+		tagline: "Spend crypto like cash.",
+	},
+
+	// Single source of truth for supported assets across Hero, Nav, Pricing, and Bento
+	supportedAssets: ["SOL", "USDC", "ETH", "BTC"] as const, // VERIFY(owner)
+	navTickerAssets: ["SOL", "USDC", "ETH"] as const, // VERIFY(owner)
+
+	// Claims that need substantiation (Pass 7 Section 5: plain, accountable English)
+	claims: {
+		applePay: "Works with Apple Pay", // VERIFY(compliance)
+		refund: "Card balance refundable to source wallet", // VERIFY(compliance)
+		noAnnualFees: "No annual fees", // VERIFY(compliance)
+		merchantAcceptance: "Cards work at any merchant that accepts Mastercard", // VERIFY(compliance)
+		issuanceTime: "Issued in under 30 seconds", // VERIFY(compliance)
+		issuanceHeadline: "under 30 seconds", // VERIFY(compliance)
+	},
+
 	cardIssuanceSpeed: {
 		headline: "30s",
+		claim: "Issued in under 30 seconds", // VERIFY(compliance)
 		copy: "Virtual cards issued in seconds with automated spend limits and merchant controls.",
 		status: "VERIFIED",
 		notes: "Requires business identity verification before issuance.",
