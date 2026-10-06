@@ -57,13 +57,13 @@ export function OffcardHeroDrop({ onAction, href = "/api/auth/login" }: OffcardH
 	const cardDropP = clampRange(scrollProgress, 0.0, 0.45);
 	// Front Black Titanium Card starts with top edge at ~54vh in initial viewport,
 	// then glides up into center focus
-	const frontCardY = lerp(85, -20, cardDropP);
+	const frontCardY = lerp(190, -20, cardDropP);
 	const frontCardRotX = lerp(16, 20, cardDropP);
 	const frontCardRotZ = lerp(0, -3.5, cardDropP);
 	const frontCardScale = lerp(0.96, 1.02, cardDropP);
 
 	// Back Platinum Silver Card drops & sits ~85px below front card with clean visible separation
-	const backCardY = lerp(95, 68, cardDropP);
+	const backCardY = lerp(200, 68, cardDropP);
 	const backCardRotX = lerp(16, 22, cardDropP);
 	const backCardRotZ = lerp(0, 2.8, cardDropP);
 	const backCardZ = lerp(-40, -150, cardDropP);
