@@ -67,29 +67,14 @@ const VARIANT_OVERLAY: Record<string, string> = {
 // ─── EMV Chip ────────────────────────────────────────────────────────────────
 
 function EMVChip({ variant }: { variant: string }) {
-	const chipGrad: Record<string, string> = {
-		grid: "linear-gradient(135deg, #7a7060 0%, #c8b870 45%, #a08840 100%)",
-		chrome: "linear-gradient(135deg, #b0a8a0 0%, #e0d8c8 45%, #908878 100%)",
-		carbon: "linear-gradient(135deg, #585850 0%, #989080 45%, #484840 100%)",
-		lumen: "linear-gradient(135deg, #c0b060 0%, #f0e098 45%, #a09040 100%)",
-	};
-
 	return (
-		<div
-			className="card3d-chip"
-			style={{ background: chipGrad[variant] ?? chipGrad.grid }}
-		>
-			<svg
-				width="100%"
-				height="100%"
-				viewBox="0 0 44 32"
-				fill="none"
-				xmlns="http://www.w3.org/2000/svg"
-				style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
-			>
-				<rect x="0.5" y="0.5" width="43" height="31" rx="4.5" stroke="rgba(0,0,0,0.22)" strokeWidth="1" />
-				<path d="M14 0V32M30 0V32M0 16H44M14 10H30M14 22H30" stroke="rgba(0,0,0,0.18)" strokeWidth="0.8" />
-			</svg>
+		<div className="card3d-chip">
+			<img
+				src="/images/emv-chip-realistic.png"
+				alt="EMV Chip"
+				className="w-full h-full object-contain pointer-events-none select-none rounded-[6px]"
+				loading="eager"
+			/>
 		</div>
 	);
 }

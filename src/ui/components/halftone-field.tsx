@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 
 export interface HalftoneFieldProps {
-	variant?: "hero" | "panel";
+	variant?: "hero" | "panel" | "studio";
 	pitch?: number;
 	className?: string;
 }
@@ -55,15 +55,25 @@ export function HalftoneField({ variant = "hero", pitch = 22, className = "" }: 
 
 		const mask = (nx: number, ny: number) => {
 			if (variant === "hero") {
-				// Mask away from the central headline zone (centered at nx = 0.5, ny = 0.22)
-				const dx = (nx - 0.5) / 0.38;
-				const dy = (ny - 0.22) / 0.16;
+				// Mask away from the central headline & intro zone (centered at nx = 0.5, ny = 0.20)
+				const dx = (nx - 0.5) / 0.42;
+				const dy = (ny - 0.20) / 0.18;
 				const distToCenter = Math.hypot(dx, dy);
-				// 0 inside headline zone, smoothly rising to 1 outside it
-				const headlineHole = smooth(clamp01((distToCenter - 0.5) / 0.5));
+				// 0 inside text zone, smoothly rising to 1 outside it
+				const headlineHole = smooth(clamp01((distToCenter - 0.45) / 0.45));
 				// Vertical bounds: visible throughout hero
-				const vert = 1 - smooth(clamp01((ny - 0.85) / 0.15));
+				const vert = 1 - smooth(clamp01((ny - 0.88) / 0.12));
 				return headlineHole * vert;
+			}
+			if (variant === "studio") {
+				// Mask lightly away from the title area, softly fading towards edges with ambient flow around the 2 card stages
+				const dx = (nx - 0.5) / 0.35;
+				const dy = (ny - 0.12) / 0.12;
+				const distToHeader = Math.hypot(dx, dy);
+				const headerHole = smooth(clamp01((distToHeader - 0.35) / 0.45));
+				// Soft fade at top and bottom edges
+				const vertFade = smooth(clamp01(ny / 0.12)) * (1 - smooth(clamp01((ny - 0.88) / 0.12)));
+				return headerHole * vertFade * 0.75;
 			}
 			return smooth(clamp01((nx - 0.55) / 0.45));
 		};

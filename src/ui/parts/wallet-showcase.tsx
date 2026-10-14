@@ -17,6 +17,8 @@
 import { useCallback, useState } from "react";
 import { WalletStack, type WalletCard } from "../components/wallet-stack";
 import { Card3DInspector, type InspectorCardData } from "../components/card-3d-inspector";
+import { HalftoneField } from "../components/halftone-field";
+import { DEMO_CARDHOLDER } from "../../content/demoData";
 
 // ─── Elemental card data ───────────────────────────────────────────────────────
 
@@ -28,7 +30,7 @@ const ELEMENTAL_CARDS: (InspectorCardData & WalletCard)[] = [
 		product: "Grid",
 		variant: "grid",
 		image: "/images/cards/card-grid.jpg",
-		holder: "NORTHWIND STUDIO LTD",
+		holder: DEMO_CARDHOLDER,
 		lastFour: "7474",
 		expires: "08/28",
 		materialSpec: "Precision Brushed Steel",
@@ -51,7 +53,7 @@ const ELEMENTAL_CARDS: (InspectorCardData & WalletCard)[] = [
 		product: "Chrome",
 		variant: "chrome",
 		image: "/images/cards/card-chrome.jpg",
-		holder: "NORTHWIND STUDIO LTD",
+		holder: DEMO_CARDHOLDER,
 		lastFour: "2343",
 		expires: "12/29",
 		materialSpec: "Mirror-Polished Alloy",
@@ -74,7 +76,7 @@ const ELEMENTAL_CARDS: (InspectorCardData & WalletCard)[] = [
 		product: "Carbon",
 		variant: "carbon",
 		image: "/images/cards/card-carbon.jpg",
-		holder: "NORTHWIND STUDIO LTD",
+		holder: DEMO_CARDHOLDER,
 		lastFour: "9613",
 		expires: "06/27",
 		materialSpec: "Matte Black Ceramic-Coat",
@@ -96,7 +98,7 @@ const ELEMENTAL_CARDS: (InspectorCardData & WalletCard)[] = [
 		product: "Lumen",
 		variant: "lumen",
 		image: "/images/cards/card-lumen.jpg",
-		holder: "NORTHWIND STUDIO LTD",
+		holder: DEMO_CARDHOLDER,
 		lastFour: "0917",
 		expires: "03/28",
 		materialSpec: "Dual-Tone Anodized Aluminum",
@@ -145,14 +147,32 @@ export function WalletShowcase({
 		setActiveIndex(i);
 	}, []);
 
+	// Edition-reactive ambient glow colors
+	const AMBIENT_GLOWS: Record<string, string> = {
+		grid: "radial-gradient(ellipse 60% 50% at 50% 45%, rgba(160, 180, 205, 0.07) 0%, rgba(40, 50, 70, 0.03) 45%, transparent 70%)",
+		chrome: "radial-gradient(ellipse 65% 55% at 50% 45%, rgba(240, 210, 170, 0.08) 0%, rgba(140, 120, 200, 0.04) 40%, transparent 70%)",
+		carbon: "radial-gradient(ellipse 55% 45% at 50% 45%, rgba(200, 200, 210, 0.05) 0%, rgba(30, 30, 35, 0.02) 45%, transparent 70%)",
+		lumen: "radial-gradient(ellipse 65% 55% at 50% 45%, rgba(210, 230, 120, 0.08) 0%, rgba(130, 150, 220, 0.04) 40%, transparent 70%)",
+	};
+
 	return (
 		<section
 			id="card-designs"
 			data-band="dark"
-			className="off-band off-band--dark card-studio-band"
+			className="off-band off-band--dark card-studio-band relative overflow-hidden"
 			aria-labelledby="card-studio-title"
 		>
-			<div className="off-container">
+			{/* Dynamic value-noise interactive halftone field */}
+			<HalftoneField variant="studio" pitch={24} className="opacity-45 pointer-events-none" />
+
+			{/* Responsive ambient spotlight that subtly shifts with active card edition */}
+			<div
+				className="pointer-events-none absolute inset-0 transition-all duration-700 ease-out z-0"
+				style={{ background: AMBIENT_GLOWS[activeCard.variant] ?? AMBIENT_GLOWS.grid }}
+				aria-hidden="true"
+			/>
+
+			<div className="off-container relative z-10">
 
 				{/* Section headline */}
 				<div className="card-studio-headline">

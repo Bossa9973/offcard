@@ -159,21 +159,13 @@ function CardFace({
 
 			{/* ── Mid: Metallic EMV Chip ── */}
 			<div className="ws-card-chip-row">
-				<div
-					className={`ws-card-chip ws-card-chip--${variant}`}
-					style={{ background: CHIP_GRAD[variant] ?? CHIP_GRAD.grid }}
-				>
-					<svg
-						width="100%"
-						height="100%"
-						viewBox="0 0 44 32"
-						fill="none"
-						xmlns="http://www.w3.org/2000/svg"
-						style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
-					>
-						<rect x="0.5" y="0.5" width="43" height="31" rx="4.5" stroke="rgba(0,0,0,0.22)" strokeWidth="1" />
-						<path d="M14 0V32M30 0V32M0 16H44M14 10H30M14 22H30" stroke="rgba(0,0,0,0.18)" strokeWidth="0.8" />
-					</svg>
+				<div className={`ws-card-chip ws-card-chip--${variant}`}>
+					<img
+						src="/images/emv-chip-realistic.png"
+						alt="EMV Chip"
+						className="w-full h-full object-contain pointer-events-none select-none rounded-[6px]"
+						loading="eager"
+					/>
 				</div>
 			</div>
 

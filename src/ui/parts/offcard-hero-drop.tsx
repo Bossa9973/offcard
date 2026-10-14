@@ -55,15 +55,15 @@ export function OffcardHeroDrop({ onAction, href = "/api/auth/login" }: OffcardH
 
 	// 1. 3D Card Drop & Tilt animation (0.00 -> 0.45)
 	const cardDropP = clampRange(scrollProgress, 0.0, 0.45);
-	// Front Black Titanium Card starts with top edge at ~54vh in initial viewport,
-	// then glides up into center focus
-	const frontCardY = lerp(190, -20, cardDropP);
+	// Front Black Titanium Card starts comfortably below the intro CTA and compatibility line,
+	// then glides up into center focus when scrolled
+	const frontCardY = lerp(270, 0, cardDropP);
 	const frontCardRotX = lerp(16, 20, cardDropP);
 	const frontCardRotZ = lerp(0, -3.5, cardDropP);
 	const frontCardScale = lerp(0.96, 1.02, cardDropP);
 
-	// Back Platinum Silver Card drops & sits ~85px below front card with clean visible separation
-	const backCardY = lerp(200, 68, cardDropP);
+	// Back Platinum Silver Card drops & sits with clean separation
+	const backCardY = lerp(280, 85, cardDropP);
 	const backCardRotX = lerp(16, 22, cardDropP);
 	const backCardRotZ = lerp(0, 2.8, cardDropP);
 	const backCardZ = lerp(-40, -150, cardDropP);
@@ -97,10 +97,10 @@ export function OffcardHeroDrop({ onAction, href = "/api/auth/login" }: OffcardH
 					/>
 
 					{/* =================================================================
-					    1. HERO INTRO HEADLINE BLOCK (Centered at ~20vh on load)
+					    1. HERO INTRO HEADLINE BLOCK (Centered at ~12-14vh on load)
 					    ================================================================= */}
 					<div
-						className="absolute inset-x-0 top-[14vh] sm:top-[16vh] lg:top-[18vh] z-20 flex flex-col items-center text-center px-4 max-w-4xl mx-auto transition-opacity duration-200"
+						className="absolute inset-x-0 top-[10vh] sm:top-[12vh] lg:top-[13vh] z-20 flex flex-col items-center text-center px-4 max-w-4xl mx-auto transition-opacity duration-200"
 						style={{
 							opacity: heroIntroOpacity,
 							transform: `translateY(${heroIntroTranslateY}px)`,
@@ -135,7 +135,7 @@ export function OffcardHeroDrop({ onAction, href = "/api/auth/login" }: OffcardH
 					</div>
 
 					{/* =================================================================
-					    2. 3D STAGE CONTAINER (Card top edge at ~54vh on load)
+					    2. 3D STAGE CONTAINER (Card top edge at ~58vh on load)
 					    ================================================================= */}
 					<div
 						className="relative w-full max-w-[1440px] flex items-center justify-center z-10"
@@ -143,7 +143,7 @@ export function OffcardHeroDrop({ onAction, href = "/api/auth/login" }: OffcardH
 							height: "330px",
 							perspective: "1200px",
 							perspectiveOrigin: "50% 50%",
-							marginTop: "4vh",
+							marginTop: "16vh",
 						}}
 					>
 						{/* Floor ambient specular shadow under the cards */}

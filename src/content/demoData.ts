@@ -1,8 +1,8 @@
 // DEMO DATA: Centralized demo fixtures for Off-Card crypto card product
 // All figures, balances, and identifiers below are demonstration fixtures.
 
-export const DEMO_CARDHOLDER = "NORTHWIND STUDIO LTD";
-export const DEMO_COMPANY = "NORTHWIND STUDIO LTD";
+export const DEMO_CARDHOLDER = "OFFCARD HOLDINGS LTD";
+export const DEMO_COMPANY = "OFFCARD HOLDINGS LTD";
 
 export interface DemoCardData {
 	balance: string;
